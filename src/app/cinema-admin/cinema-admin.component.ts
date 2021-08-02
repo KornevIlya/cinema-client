@@ -24,10 +24,7 @@ export class CinemaAdminComponent implements OnInit{
   //сранит реальные ширину и высоту 
   styleHall: HallStyle = { height: "", width: ""}
 
-  styleSub = {
-    left: "50px;",
-    top: '50px'
-  }
+  styleElem: HallStyle = { height: "", width: ""}
 
   @ViewChild('adminHall')
   private adminHall!: ElementRef
@@ -67,6 +64,11 @@ export class CinemaAdminComponent implements OnInit{
       width: `${this.hallWidth * this.hallScale}px`,
       height: `${this.hallHeight * this.hallScale}px`
     }
+
+    this.styleElem = {
+      width: `${this.hallScale}px`,
+      height: `${this.hallScale}px`
+    }
   }
 
   updateState() {
@@ -74,4 +76,11 @@ export class CinemaAdminComponent implements OnInit{
     this.scale = this.hallScale
   }
   
+  getHeight(): Array<number> {
+    return new Array(this.hallHeight)
+  }
+
+  getWidth(): Array<number> {
+    return new Array(this.hallWidth)
+  }
 }
