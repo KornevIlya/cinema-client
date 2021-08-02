@@ -1,0 +1,45 @@
+
+<div class="admin-container">
+    <div class="admin-hall" [style]="styleHall" #adminHall>
+        <app-seat [seat]="seat" [scale]="scale"></app-seat>
+    </div>
+
+
+    <div class="admin-form">
+        <div class="p-field">
+            <span class="p-float-label">
+                <p-inputNumber [(ngModel)]="hallWidth"  inputId="hallWidth" [useGrouping]="false"></p-inputNumber>
+                <label for="hallWidth">Ширина зала</label>
+            </span>
+        </div>
+    
+        <div class="p-field">
+            <span class="p-float-label">
+                <p-inputNumber [(ngModel)]="hallHeight"  inputId="hallHeight" [useGrouping]="false"></p-inputNumber>
+                <label for="hallWidth">Длина зала</label>
+            </span>
+        </div>
+    
+        <div class="p-field">
+            <span class="p-float-label">
+                <p-inputNumber 
+                    [(ngModel)]="hallScale" 
+                    inputId="hallScale" 
+                    [useGrouping]="false"
+                ></p-inputNumber>
+                <label for="hallScale">Масштаб клетки</label>
+            </span>
+        </div>
+        <p-button label="Применить" (onClick)="updateState()"></p-button>
+    </div>
+    
+</div> 
+<!--<div class="eat-container">
+    <div  class="eat">
+        <div #eat class="context">
+
+        </div>
+        <p-contextMenu [target]="eat" [model]="items" appendTo="body"></p-contextMenu>
+    </div>
+    
+</div>-->

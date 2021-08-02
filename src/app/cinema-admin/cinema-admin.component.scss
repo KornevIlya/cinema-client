@@ -1,0 +1,17 @@
+.admin {
+    &-container {
+        width: 500px;
+        margin: 0 auto;
+        padding-top: 50px;
+    }
+
+    &-hall {
+        position: relative;
+        margin: 0 auto;
+        background-color: aqua;
+    }
+
+    &-form {
+        padding-top: 50px;
+    }
+}
