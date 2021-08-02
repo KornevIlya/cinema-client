@@ -1,15 +1,120 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Seat, SeatCategory, SeatStyle } from './seat-model';
+import {MenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-seat',
   templateUrl: './seat.component.html',
   styleUrls: ['./seat.component.scss']
 })
-export class SeatComponent implements OnInit {
 
-  constructor() { }
+export class SeatComponent implements OnInit, OnChanges {
+
+  //не обязательное поле
+  /*@Input("width") seatWidth: number = 1
+  //не обязательное поле
+  @Input("height") seatHeight: number = 1
+
+
+  @Input("scale") seatScale!: number
+  
+  @Input() x!: number
+  @Input() y!: number
+
+  @Input() price: number = 0*/
+
+  @Input() seat!: Seat
+  @Input("scale") seatScale!: number
+
+  style: SeatStyle
+  
+  items!: MenuItem[]
+  //private selectedItem: SeatCategory | null = null
+
+  constructor() {
+    this.style = {
+      height: "",
+      width: "",
+      left: "",
+      top: "",
+      backgroundColor: ""
+    }
+  }
 
   ngOnInit(): void {
+    
+    this.updateStyle()
+
+    this.items = [{
+      label: this.createTemplate("Место свободно", "free"),
+      escape: false,
+      command: () => {
+        this.seat.category = SeatCategory.FREE
+        this.updateStyle()
+      }
+    }, {
+      label: this.createTemplate("Место забронировано", "blocked"),
+      escape: false,
+      command: () => {
+        this.seat.category = SeatCategory.BLOCKED
+        this.updateStyle()
+      }
+    }, {
+      label: this.createTemplate("Место выбрано", "selected"),
+      escape: false,
+      command: () => {
+        this.seat.category = SeatCategory.SELECTED
+        this.updateStyle()
+      }
+    }, {
+      label: this.createTemplate("Место куплено", "bougth"),
+      escape: false,
+      command: () => {
+        this.seat.category = SeatCategory.BOUGTH
+        this.updateStyle()
+      }
+    }, {
+      label: this.createTemplate("Место не активно", "no-active"),
+      escape: false,
+      command: () => {
+        this.seat.category = SeatCategory.NO_ACTIVE
+        this.updateStyle()
+      }
+    }]
+  }
+
+  ngOnChanges() {
+    this.updateStyle()
+  }
+
+  getBackgroundColor(type: SeatCategory) {
+    switch(type) {
+      case SeatCategory.FREE: return "cornsilk"
+      case SeatCategory.BLOCKED: return "maroon"
+      case SeatCategory.SELECTED: return "forestgreen"
+      case SeatCategory.BOUGTH: return "dodgerblue"
+      case SeatCategory.NO_ACTIVE: return "dimgrey"
+      default: return "cornsilk"
+    }
+  }
+
+  createTemplate(message: string, style: string): string {
+    return `
+      <div class="seat-sub-menu-container"> 
+        <div class="seat-sub-menu-color ${style}"></div>
+        <span>${message}</span>
+      </div>
+    `
+  }
+
+  updateStyle() {
+    this.style = {
+      height: `${this.seatScale}px`,
+      width: `${this.seatScale}px`,
+      left: `${this.seat.x * this.seatScale}px`,
+      top: `${this.seat.y * this.seatScale}px`,
+      backgroundColor: `${this.getBackgroundColor(this.seat.category)}`
+    }
   }
 
 }

@@ -1,1 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
+/*.free {
+    width: 10px;
+    height: 10px;
+    margin-right: 1rem;
+    background-color: cornsilk ;
+}*/
+
+.seat-sub-menu-container {
+    display: flex;
+}
+.seat-sub-menu-color {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 1rem;
+}
+
+.seat-sub-menu-color.free{
+    background-color: cornsilk;
+}
+.seat-sub-menu-color.blocked {
+    background-color: maroon;
+}
+.seat-sub-menu-color.selected {
+    background-color: forestgreen;
+}
+.seat-sub-menu-color.bougth {
+    background-color: dodgerblue;
+}
+.seat-sub-menu-color.no-active {
+    background-color: dimgrey;
+}
