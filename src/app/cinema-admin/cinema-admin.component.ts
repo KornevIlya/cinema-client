@@ -18,9 +18,11 @@ export class CinemaAdminComponent implements OnInit{
   hallHeight: number = 10
   //масштаб, ширина и высота одной клетки
   hallScale: number = 50
+
   scale: number = this.hallScale
 
-  
+  private gridWidth: number = this.hallWidth
+  private gridHeight: number = this.hallHeight
   //сранит реальные ширину и высоту 
   styleHall: HallStyle = { height: "", width: ""}
 
@@ -72,15 +74,17 @@ export class CinemaAdminComponent implements OnInit{
   }
 
   updateState() {
+    this.gridWidth = this.hallWidth
+    this.gridHeight = this.hallHeight
     this.setStyle()
     this.scale = this.hallScale
   }
   
   getHeight(): Array<number> {
-    return new Array(this.hallHeight)
+    return new Array(this.gridHeight)
   }
 
   getWidth(): Array<number> {
-    return new Array(this.hallWidth)
+    return new Array(this.gridWidth)
   }
 }
