@@ -28,8 +28,11 @@ export class SeatComponent implements OnInit, OnChanges {
 
   style: SeatStyle
   
-  items!: MenuItem[]
+  selectSeatCategory!: MenuItem[]
   //private selectedItem: SeatCategory | null = null
+
+  private isSelect: boolean = false
+  private lastBackgroundColor: string = ""
 
   constructor() {
     this.style = {
@@ -45,7 +48,7 @@ export class SeatComponent implements OnInit, OnChanges {
     
     this.updateStyle()
 
-    this.items = [{
+    this.selectSeatCategory = [{
       label: this.createTemplate("Место свободно", "free"),
       escape: false,
       command: () => {
@@ -84,6 +87,7 @@ export class SeatComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
+    console.log("onchange")
     this.updateStyle()
   }
 
@@ -117,4 +121,21 @@ export class SeatComponent implements OnInit, OnChanges {
     }
   }
 
+  /*selectSeat(seatRef: any) {
+    console.log("click seat")
+    if(!this.isSelect) {
+     // seatRef.style.backgroundColor = "red"
+      this.lastBackgroundColor = this.style.backgroundColor
+      this.style = {
+        ...this.style,
+        backgroundColor: "red"
+     }
+    } else {
+      this.style = {
+        ...this.style,
+        backgroundColor: this.lastBackgroundColor
+     }
+    }
+    this.isSelect = !this.isSelect
+  }*/
 }

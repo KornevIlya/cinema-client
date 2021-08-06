@@ -1,29 +1,42 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SeatComponent } from './seat/seat.component';
 import { CinemaAdminComponent } from './cinema-admin/cinema-admin.component';
+import { EditSeatComponent } from './cinema-admin/edit-seat/edit-seat.component';
 
-import {ContextMenuModule} from 'primeng/contextmenu';
-import {InputNumberModule} from 'primeng/inputnumber';
-import {ButtonModule} from 'primeng/button';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ButtonModule } from 'primeng/button';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
   declarations: [
     AppComponent,
     SeatComponent,
-    CinemaAdminComponent
+    CinemaAdminComponent,
+    EditSeatComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
     ContextMenuModule,
     InputNumberModule,
-    ButtonModule
+    ButtonModule,
+    DynamicDialogModule,
+    InputTextModule,
+    DropdownModule,
+    CheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

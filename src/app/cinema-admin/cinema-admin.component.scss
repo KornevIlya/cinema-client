@@ -1,6 +1,6 @@
 .admin {
     &-container {
-        width: 500px;
+        width: 800px;
         margin: 0 auto;
         padding-top: 50px;
     }
@@ -8,11 +8,23 @@
     &-hall {
         position: relative;
         margin: 0 auto;
-        background-color: aqua;
+       
+        &-buttons {
+            display: flex;
+            &-container {
+                display: flex;
+                flex-direction: row;
+            }
+        }
     }
 
     &-form {
-        padding-top: 50px;
+        &-group {
+            display: flex;
+            flex-direction: column;
+
+            font-size: 20px;
+        }
     }
 
     &-grid {
@@ -23,6 +35,7 @@
         }
         &-elem{
             border: 1px solid darkmagenta;
+            background-color: aqua;
         }
     }
 }

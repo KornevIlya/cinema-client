@@ -1,39 +1,62 @@
 
 <div class="admin-container">
-    <div class="admin-hall" [style]="styleHall" #adminHall>
-        <div class="admin-grid" *ngFor="let i of getHeight()">
-            <div class="admin-grid-row" *ngFor="let j of getWidth()">
-                <div class="admin-grid-elem" [style]="styleElem"></div>
-            </div>      
+    <div class="admin-hall"  #adminHall>
+        <div class="admin-grid" *ngFor="let elem of hallHeightCount; let i = index">
+            <div class="admin-grid-row" *ngFor="let elem2 of hallWidthCount; let j = index">
+                <div class="admin-grid-elem" [style]="styleElem" #elem (dblclick)="addElem(i, j)">
+                    <!--<p-contextMenu [target]="elem" appendTo="body" [model]="elemAction"></p-contextMenu>-->
+                </div>
+            </div>
+            <p-button icon="pi pi-plus" (onClick)="addRow(i)"></p-button>  
+            <p-button icon="pi pi-times" (onClick)="deleteRow(i)"></p-button>   
         </div>
-        <app-seat [seat]="seat" [scale]="scale"></app-seat>
+        <div class="admin-hall-buttons-container">
+            <div *ngFor="let elem of hallWidthCount; let i = index" class="admin-holl-buttons" [style]="buttonContainerStyle">
+                <p-button icon="pi pi-plus" (onClick)="addColumn(i)"></p-button>
+                <p-button icon="pi pi-times" (onClick)="deleteColumn(i)"></p-button>
+            </div>
+        </div>
+        
+        
+        <!--<app-seat [seat]="seat" [scale]="scale" #seatRef (click)="click(seat)"></app-seat>-->
+        <div *ngFor="let seat of seats">
+            <app-seat [seat]="seat" [scale]="scale" #seatRef (click)="show(seat)"></app-seat>
+        </div>
+       
     </div>
 
 
     <div class="admin-form">
-        <div class="p-field">
-            <span class="p-float-label">
-                <p-inputNumber [(ngModel)]="hallWidth"  inputId="hallWidth" [useGrouping]="false"></p-inputNumber>
-                <label for="hallWidth">Ширина зала</label>
-            </span>
+        <!--<p-button label="Сгенерировать" (onClick)="generateSeats()"></p-button>-->
+        <div class="admin-form-group">
+            <label for="hallWidth">Ширина зала</label>
+            <p-inputNumber 
+                [(ngModel)]="hallWidth"  
+                inputId="hallWidth" 
+                [useGrouping]="false"
+                [min]="1"
+            ></p-inputNumber>
         </div>
     
-        <div class="p-field">
-            <span class="p-float-label">
-                <p-inputNumber [(ngModel)]="hallHeight"  inputId="hallHeight" [useGrouping]="false"></p-inputNumber>
-                <label for="hallWidth">Длина зала</label>
-            </span>
-        </div>
-    
-        <div class="p-field">
-            <span class="p-float-label">
-                <p-inputNumber 
-                    [(ngModel)]="hallScale" 
-                    inputId="hallScale" 
+        <div class="admin-form-group">
+            <label for="hallWidth">Длина зала</label>
+            <p-inputNumber 
+                    [(ngModel)]="hallHeight" 
+                    inputId="hallHeight" 
                     [useGrouping]="false"
-                ></p-inputNumber>
-                <label for="hallScale">Масштаб клетки</label>
-            </span>
+                    [min]="1"
+            ></p-inputNumber>
+        </div>
+    
+        <div class="admin-form-group">
+            <label for="hallScale">Масштаб клетки</label>
+            <p-inputNumber 
+                [(ngModel)]="hallScale" 
+                inputId="hallScale" 
+                [useGrouping]="false"
+                [min]="1"
+            ></p-inputNumber>
+                
         </div>
         <p-button label="Применить" (onClick)="updateState()"></p-button>
     </div>

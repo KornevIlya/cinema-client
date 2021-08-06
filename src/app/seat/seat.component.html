@@ -1,7 +1,7 @@
 
 
 <div #seat class="seat" [style]="style">
-   
+    <p-contextMenu [target]="seat" [model]="selectSeatCategory" appendTo="body"></p-contextMenu>
 </div>
-<p-contextMenu [target]="seat" [model]="items" appendTo="body"></p-contextMenu>
+
 
