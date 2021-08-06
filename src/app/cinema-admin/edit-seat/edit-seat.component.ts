@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import {DynamicDialogRef} from 'primeng/dynamicdialog';
 import {DynamicDialogConfig} from 'primeng/dynamicdialog';
 
-import { SeatCategory } from 'src/app/seat/seat-model';
+//import { SeatCategory } from 'src/app/seat/seat-model';
 
 @Component({
   selector: 'app-edit-seat',
@@ -15,9 +15,9 @@ export class EditSeatComponent implements OnInit, OnDestroy {
   x: number
   y: number
 
-  category: any
+ // category: any
   //categories: SeatCategory[]
-  categories = [{
+  /*categories = [{
     label: "свободно",
     category: SeatCategory.FREE,
   }, {
@@ -32,7 +32,7 @@ export class EditSeatComponent implements OnInit, OnDestroy {
   }, {
     label: "не активно",
     category: SeatCategory.NO_ACTIVE,
-  },]
+  },]*/
 
 
   constructor(private ref: DynamicDialogRef, private config: DynamicDialogConfig) { 
@@ -45,12 +45,11 @@ export class EditSeatComponent implements OnInit, OnDestroy {
       SeatCategory.NO_ACTIVE
     ]*/
 
-    console.log("constructor")
-    this.category = {label: "", category: config.data.seat.category}
-    console.log(this.category)
+    //this.category = {label: "", category: config.data.seat.category}
+    //console.log(this.category)
     this.x = config.data.seat.x
     this.y = config.data.seat.y
-    this.category = config.data.seat.category
+    //this.category = config.data.seat.category
     //console.log(ref)
     //console.log(config)
   }
@@ -63,12 +62,10 @@ export class EditSeatComponent implements OnInit, OnDestroy {
   }
 
   ok() {
-    console.log("ok")
-    console.log(this.category)
     this.ref.close({
       x: this.x,
       y: this.y,
-      category: this.category.category,
+      //category: this.category.category,
       isDelete: false
     })
   }

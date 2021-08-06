@@ -1,9 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
 
 import { HallStyle } from './cinema-admin-models'
-import { Seat, SeatCategory } from '../seat/seat-model'
+import { Seat, /*SeatCategory*/ } from '../seat/seat-model'
 import { EditSeatComponent } from './edit-seat/edit-seat.component';
-import { MenuItem } from 'primeng/api';
+//import { MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
@@ -39,13 +39,13 @@ export class CinemaAdminComponent implements OnInit{
   /*@ViewChild('adminHall')
   private adminHall!: ElementRef*/
 
-  elemAction!: MenuItem[]
+  //elemAction!: MenuItem[]
 
   seat: Seat = {
     x: 4,
     y: 4,
     price: 150,
-    category: SeatCategory.FREE
+    //category: SeatCategory.FREE
   }
 
   seats: Seat[] = []
@@ -94,14 +94,14 @@ export class CinemaAdminComponent implements OnInit{
   ngOnInit(): void {
     this.setStyle()
     //this.adminHallRef = document.getElementById("admin-hall")
-    this.elemAction = [{
+    /*this.elemAction = [{
       label: "Добавить место",
       command: (event) => {
         console.log(event.originalEvent)
         //console.log(event.item)
         //const elem = event.originalEvent.target
       }
-    }]
+    }]*/
   }
 
   /*ngAfterViewChecked(): void {
@@ -165,7 +165,7 @@ export class CinemaAdminComponent implements OnInit{
         x: i,
         y,
         price: 150,
-        category: SeatCategory.FREE
+        //category: SeatCategory.FREE
       })
     }
     return seats
@@ -178,7 +178,7 @@ export class CinemaAdminComponent implements OnInit{
         x,
         y: i,
         price: 150,
-        category: SeatCategory.FREE
+        //category: SeatCategory.FREE
       })
     }
     return seats
@@ -229,7 +229,7 @@ export class CinemaAdminComponent implements OnInit{
       x: j,
       y: i,
       price: 150,
-      category: SeatCategory.FREE
+      //category: SeatCategory.FREE
     })
   }
 }

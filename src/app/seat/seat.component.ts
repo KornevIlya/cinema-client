@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
-import { Seat, SeatCategory, SeatStyle } from './seat-model';
-import {MenuItem} from 'primeng/api';
+import { Seat, /*SeatCategory,*/ SeatStyle } from './seat-model';
+//import {MenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-seat',
@@ -40,7 +40,7 @@ export class SeatComponent implements OnInit, OnChanges {
       width: "",
       left: "",
       top: "",
-      backgroundColor: ""
+      //backgroundColor: ""
     }
   }
 
@@ -91,7 +91,7 @@ export class SeatComponent implements OnInit, OnChanges {
     this.updateStyle()
   }
 
-  getBackgroundColor(type: SeatCategory) {
+  /*getBackgroundColor(type: SeatCategory) {
     switch(type) {
       case SeatCategory.FREE: return "cornsilk"
       case SeatCategory.BLOCKED: return "maroon"
@@ -100,16 +100,16 @@ export class SeatComponent implements OnInit, OnChanges {
       case SeatCategory.NO_ACTIVE: return "dimgrey"
       default: return "cornsilk"
     }
-  }
+  }*/
 
-  createTemplate(message: string, style: string): string {
+  /*createTemplate(message: string, style: string): string {
     return `
       <div class="seat-sub-menu-container"> 
         <div class="seat-sub-menu-color ${style}"></div>
         <span>${message}</span>
       </div>
     `
-  }
+  }*/
 
   updateStyle() {
     this.style = {
@@ -117,7 +117,7 @@ export class SeatComponent implements OnInit, OnChanges {
       width: `${this.seatScale}px`,
       left: `${this.seat.x * this.seatScale}px`,
       top: `${this.seat.y * this.seatScale}px`,
-      backgroundColor: `${this.getBackgroundColor(this.seat.category)}`
+      //backgroundColor: `${this.getBackgroundColor(this.seat.category)}`
     }
   }
 
