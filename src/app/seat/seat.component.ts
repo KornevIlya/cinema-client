@@ -28,11 +28,11 @@ export class SeatComponent implements OnInit, OnChanges {
 
   style: SeatStyle
   
-  selectSeatCategory!: MenuItem[]
+ // selectSeatCategory!: MenuItem[]
   //private selectedItem: SeatCategory | null = null
 
-  private isSelect: boolean = false
-  private lastBackgroundColor: string = ""
+  //private isSelect: boolean = false
+ // private lastBackgroundColor: string = ""
 
   constructor() {
     this.style = {
@@ -48,7 +48,7 @@ export class SeatComponent implements OnInit, OnChanges {
     
     this.updateStyle()
 
-    this.selectSeatCategory = [{
+    /*this.selectSeatCategory = [{
       label: this.createTemplate("Место свободно", "free"),
       escape: false,
       command: () => {
@@ -83,7 +83,7 @@ export class SeatComponent implements OnInit, OnChanges {
         this.seat.category = SeatCategory.NO_ACTIVE
         this.updateStyle()
       }
-    }]
+    }]*/
   }
 
   ngOnChanges() {
