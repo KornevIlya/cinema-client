@@ -108,14 +108,15 @@ export class CinemaAdminComponent implements OnInit{
     console.log(this.adminHall.nativeElement.offsetWidth)
   }*/
   private setStyle() {
+    //высота на 20% больше ширины
     this.styleHall = {
       width: `${this.hallWidth * this.hallScale}px`,
-      height: `${this.hallHeight * this.hallScale}px`
+      height: `${this.hallHeight * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
     }
 
     this.styleElem = {
       width: `${this.hallScale}px`,
-      height: `${this.hallScale}px`
+      height: `${this.hallScale + Math.round(this.hallScale * 0.2)}px`
     }
 
     this.buttonContainerStyle =  {
@@ -152,15 +153,16 @@ export class CinemaAdminComponent implements OnInit{
 
   generateSeats() {
     const seats: Seat[] = []
-    for (let i = 1; i < this.hallHeight - 1; i++) {
-      seats.push(...this.generateRowSeats(1, this.hallWidth - 1, i))
+    //i это координата
+    for (let i = 1; i <= this.hallHeight; i++) {
+      seats.push(...this.generateRowSeats(1, this.hallWidth, i))
     }
     this.seats = seats
   }
 
   private generateRowSeats(xFrom: number, xTo: number, y: number): Seat[] {
     const seats: Seat[] = []
-    for (let i = xFrom; i < xTo; i++) {
+    for (let i = xFrom; i <= xTo; i++) {
       seats.push({
         x: i,
         y,
@@ -173,7 +175,7 @@ export class CinemaAdminComponent implements OnInit{
 
   private generateColumnSeats(yFrom: number, yTo: number, x: number): Seat[] {
     const seats: Seat[] = []
-    for (let i = yFrom; i < yTo; i++) {
+    for (let i = yFrom; i <= yTo; i++) {
       seats.push({
         x,
         y: i,
@@ -195,30 +197,34 @@ export class CinemaAdminComponent implements OnInit{
   }
 
   deleteRow(index: number): void {
-    this.seats = this.seats.filter(seat => seat.y !== index)
+    const coordinate = index + 1
+    this.seats = this.seats.filter(seat => seat.y !== coordinate)
   }
 
   addRow(index: number): void {
-    const haveRow = this.seats.find(seat => seat.y === index)
+    const coordinate = index + 1
+    const haveRow = this.seats.find(seat => seat.y === coordinate)
 
     if (!haveRow) {
       console.log("add row")
-      this.seats = this.seats.concat(this.generateRowSeats(1, this.hallWidth - 1, index))
+      this.seats = this.seats.concat(this.generateRowSeats(1, this.hallWidth, coordinate))
     } else {
       console.log("no add row")
     }
   }
 
   deleteColumn(index: number): void {
-    this.seats = this.seats.filter(seat => seat.x !== index)
+    const coordinate = index + 1
+    this.seats = this.seats.filter(seat => seat.x !== coordinate)
   }
 
   addColumn(index: number): void {
-    const haveRow = this.seats.find(seat => seat.x === index)
+    const coordinate = index + 1
+    const haveRow = this.seats.find(seat => seat.x === coordinate)
 
     if (!haveRow) {
       console.log("add row")
-      this.seats = this.seats.concat(this.generateColumnSeats(1, this.hallHeight - 1, index))
+      this.seats = this.seats.concat(this.generateColumnSeats(1, this.hallHeight, coordinate))
     } else {
       console.log("no add row")
     }
