@@ -27,7 +27,7 @@ export class SeatComponent implements OnInit, OnChanges {
   @Input("scale") seatScale!: number
 
   style: SeatStyle
-  
+  innerStyle: any
  // selectSeatCategory!: MenuItem[]
   //private selectedItem: SeatCategory | null = null
 
@@ -42,6 +42,7 @@ export class SeatComponent implements OnInit, OnChanges {
       top: "",
       //backgroundColor: ""
     }
+    this.innerStyle = {height: "", width: ""}
   }
 
   ngOnInit(): void {
@@ -112,12 +113,20 @@ export class SeatComponent implements OnInit, OnChanges {
   }*/
 
   updateStyle() {
+    //длина элемента на 20% больше ширины
+    const del = Math.round(this.seatScale * 0.2)
     this.style = {
-      height: `${this.seatScale}px`,
+      height: `${this.seatScale + del}px`,
       width: `${this.seatScale}px`,
-      left: `${this.seat.x * this.seatScale}px`,
-      top: `${this.seat.y * this.seatScale}px`,
+      left: `${(this.seat.x - 1) * this.seatScale}px`,
+      top: `${(this.seat.y - 1) * (this.seatScale + del)}px`,
       //backgroundColor: `${this.getBackgroundColor(this.seat.category)}`
+    }
+    
+    const innerSize = Math.round(this.seatScale * 0.8)
+    this.innerStyle = {
+      width: `${innerSize}px`,
+      height: `${innerSize}px`
     }
   }
 

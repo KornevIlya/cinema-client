@@ -2,7 +2,14 @@
 .seat {
     position: absolute;
     //background-color: maroon;
-    border: 1px solid darkmagenta;
+    //border: 1px solid darkmagenta;
+
+    &-inner {
+        //width: 80%;
+        //height: 80%;
+        margin: 0 auto;
+        background-color: cornsilk;
+    }
 }
 
 /*.icon {
