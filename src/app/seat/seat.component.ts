@@ -23,6 +23,8 @@ export class SeatComponent implements OnInit, OnChanges {
 
   @Input() price: number = 0*/
 
+  //не обязательное поле
+  @Input("width") seatWidth: number = 1
   @Input() seat!: Seat
   @Input("scale") seatScale!: number
 
@@ -115,18 +117,26 @@ export class SeatComponent implements OnInit, OnChanges {
   updateStyle() {
     //длина элемента на 20% больше ширины
     const del = Math.round(this.seatScale * 0.2)
+
+    const left = (this.seat.x - 1) * this.seatScale
+    const top = (this.seat.y - 1) * (this.seatScale + del)
+
+    const height = (this.seatScale + del) * this.seatWidth
+    const width = this.seatScale * this.seatWidth
+
     this.style = {
-      height: `${this.seatScale + del}px`,
-      width: `${this.seatScale}px`,
-      left: `${(this.seat.x - 1) * this.seatScale}px`,
-      top: `${(this.seat.y - 1) * (this.seatScale + del)}px`,
+      height: `${height}px`,
+      width: `${width}px`,
+      left: `${left}px`,
+      top: `${top}px`,
       //backgroundColor: `${this.getBackgroundColor(this.seat.category)}`
     }
     
     const innerSize = Math.round(this.seatScale * 0.8)
+    const innerWidth = innerSize * this.seatWidth
     this.innerStyle = {
-      width: `${innerSize}px`,
-      height: `${innerSize}px`
+      width: `${innerWidth}px`,
+      height: `${innerWidth}px`
     }
   }
 

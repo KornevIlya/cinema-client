@@ -18,10 +18,16 @@
         </div>
         
         
-        <!--<app-seat [seat]="seat" [scale]="scale" #seatRef (click)="click(seat)"></app-seat>-->
-        <div *ngFor="let seat of seats">
+        <app-seat 
+            [seat]="seat" 
+            [scale]="scale"
+            [width]="seatWidth"
+            #seatRef 
+            (click)="click(seat)"
+        ></app-seat>
+        <!--<div *ngFor="let seat of seats">
             <app-seat [seat]="seat" [scale]="scale" #seatRef></app-seat>
-        </div>
+        </div>-->
        
     </div>
 
