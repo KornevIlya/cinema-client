@@ -121,23 +121,32 @@ export class SeatComponent implements OnInit, OnChanges {
     const left = (this.seat.x - 1) * this.seatScale
     const top = (this.seat.y - 1) * (this.seatScale + del)
 
-    const height = (this.seatScale + del) * this.seatWidth
-    const width = this.seatScale * this.seatWidth
+    //const height = (this.seatScale + del) * this.seatWidth
+    //const width = this.seatScale * this.seatWidth
+
+    const innerSize = Math.round(this.seatScale * 0.8)
+    const innerWidth = innerSize * this.seatWidth
 
     this.style = {
+      height: `${innerWidth}px`,
+      width: `${innerWidth}px`,
+      left: `${left}px`,
+      top: `${top}px`,
+    }
+
+    /*this.style = {
       height: `${height}px`,
       width: `${width}px`,
       left: `${left}px`,
       top: `${top}px`,
-      //backgroundColor: `${this.getBackgroundColor(this.seat.category)}`
-    }
+    }*/
     
-    const innerSize = Math.round(this.seatScale * 0.8)
+    /*const innerSize = Math.round(this.seatScale * 0.8)
     const innerWidth = innerSize * this.seatWidth
     this.innerStyle = {
       width: `${innerWidth}px`,
       height: `${innerWidth}px`
-    }
+    }*/
   }
 
   /*selectSeat(seatRef: any) {
