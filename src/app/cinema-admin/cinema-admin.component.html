@@ -18,16 +18,16 @@
         </div>
         
         
-        <app-seat 
+        <!--<app-seat 
             [seat]="seat" 
             [scale]="scale"
             [width]="seatWidth"
             #seatRef 
             (click)="click(seat)"
-        ></app-seat>
-        <!--<div *ngFor="let seat of seats">
-            <app-seat [seat]="seat" [scale]="scale" #seatRef></app-seat>
-        </div>-->
+        ></app-seat>-->
+        <div *ngFor="let seat of seats">
+            <app-seat [seat]="seat" [scale]="scale" [width]="seatWidth" #seatRef></app-seat>
+        </div>
        
     </div>
 
@@ -64,6 +64,18 @@
             ></p-inputNumber>
                 
         </div>
+
+        <div class="admin-form-group">
+            <label for="seatWidth">Ширина сиденья</label>
+            <p-inputNumber 
+                [(ngModel)]="formSeatWidth" 
+                inputId="seatWidth" 
+                [useGrouping]="false"
+                [min]="1"
+            ></p-inputNumber>
+                
+        </div>
+
         <p-button label="Применить" (onClick)="updateState()"></p-button>
     </div>
     

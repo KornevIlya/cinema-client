@@ -5,6 +5,7 @@ import { Seat, /*SeatCategory*/ } from '../seat/seat-model'
 import { EditSeatComponent } from './edit-seat/edit-seat.component';
 //import { MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-cinema-admin',
@@ -16,7 +17,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 export class CinemaAdminComponent implements OnInit{
 
   //ширина зала у.е.
-  hallWidth: number = 15
+  hallWidth: number = 16
   //длина зала у.е.
   hallHeight: number = 10
   //масштаб, ширина и высота одной клетки
@@ -27,8 +28,8 @@ export class CinemaAdminComponent implements OnInit{
   hallWidthCount: number[] = []
   hallHeightCount: number[] = []
 
-  private gridWidth: number = this.hallWidth
-  private gridHeight: number = this.hallHeight
+  //private gridWidth: number = this.hallWidth
+  //private gridHeight: number = this.hallHeight
   //сранит реальные ширину и высоту 
 
   //depricated
@@ -41,6 +42,8 @@ export class CinemaAdminComponent implements OnInit{
 
   //elemAction!: MenuItem[]
   seatWidth = 2
+  formSeatWidth = 2
+
   seat: Seat = {
     x: 4,
     y: 4,
@@ -126,8 +129,16 @@ export class CinemaAdminComponent implements OnInit{
   }
 
   updateState() {
-    this.gridWidth = this.hallWidth
-    this.gridHeight = this.hallHeight
+    //this.gridWidth = this.hallWidth
+    //this.gridHeight = this.hallHeight
+
+    //если изменили ширину сидений, то генерируем новый набор сидений
+    if (this.formSeatWidth !== this.seatWidth) {
+      this.seatWidth = this.formSeatWidth
+      this.generateSeats()
+      return 
+    }
+
     this.setStyle()
     this.scale = this.hallScale
     this.setWidthCount()
@@ -154,7 +165,7 @@ export class CinemaAdminComponent implements OnInit{
   generateSeats() {
     const seats: Seat[] = []
     //i это координата
-    for (let i = 1; i <= this.hallHeight; i++) {
+    for (let i = 1; i <= this.hallHeight - this.seatWidth + 1; i += this.seatWidth) {
       seats.push(...this.generateRowSeats(1, this.hallWidth, i))
     }
     this.seats = seats
@@ -162,7 +173,7 @@ export class CinemaAdminComponent implements OnInit{
 
   private generateRowSeats(xFrom: number, xTo: number, y: number): Seat[] {
     const seats: Seat[] = []
-    for (let i = xFrom; i <= xTo; i++) {
+    for (let i = xFrom; i <= xTo - this.seatWidth + 1; i += this.seatWidth) {
       seats.push({
         x: i,
         y,
@@ -175,7 +186,7 @@ export class CinemaAdminComponent implements OnInit{
 
   private generateColumnSeats(yFrom: number, yTo: number, x: number): Seat[] {
     const seats: Seat[] = []
-    for (let i = yFrom; i <= yTo; i++) {
+    for (let i = yFrom; i <= yTo; i += this.seatWidth) {
       seats.push({
         x,
         y: i,
@@ -203,7 +214,11 @@ export class CinemaAdminComponent implements OnInit{
 
   addRow(index: number): void {
     const coordinate = index + 1
-    const haveRow = this.seats.find(seat => seat.y === coordinate)
+
+    //проверяем есть ли рядом другие места
+    const haveRow = this.seats.find(
+      seat => seat.y < coordinate + this.seatWidth && seat.y > coordinate - this.seatWidth
+    )
 
     if (!haveRow) {
       console.log("add row")
@@ -220,7 +235,10 @@ export class CinemaAdminComponent implements OnInit{
 
   addColumn(index: number): void {
     const coordinate = index + 1
-    const haveRow = this.seats.find(seat => seat.x === coordinate)
+    //проверяем есть ли рядом другие места
+    const haveRow = this.seats.find(
+      seat => seat.x < coordinate + this.seatWidth && seat.x > coordinate - this.seatWidth
+    )
 
     if (!haveRow) {
       console.log("add row")
