@@ -139,17 +139,17 @@ export class CinemaAdminComponent implements OnInit{
     //this.gridHeight = this.hallHeight
 
     //если изменили ширину сидений, то генерируем новый набор сидений
-    if (this.formSeatWidth !== this.seatWidth) {
-      this.seatWidth = this.formSeatWidth
-      this.generateSeats()
-      return 
-    }
+    ///if (this.formSeatWidth !== this.seatWidth) {
+    //  this.seatWidth = this.formSeatWidth
+   //   this.generateSeats()
+    //  return 
+   // }
 
     this.setStyle()
     this.scale = this.hallScale
     this.setWidthCount()
     this.setHeightCount()
-    //this.generateSeats()
+    this.generateSeats()
   }
   
   private setHeightCount() {
@@ -220,18 +220,21 @@ export class CinemaAdminComponent implements OnInit{
 
   addRow(index: number): void {
     const coordinate = index + 1
-
-    //проверяем есть ли рядом другие места
-    const haveRow = this.seats.find(
-      seat => seat.y < coordinate + this.seatWidth && seat.y > coordinate - this.seatWidth
-    )
-
-    if (!haveRow) {
-      console.log("add row")
-      this.seats = this.seats.concat(this.generateRowSeats(1, this.hallWidth, coordinate))
-    } else {
-      console.log("no add row")
+    console.log(`add row: ${index + this.seatWidth} ${this.hallHeight} `)
+    if (index + this.seatWidth <= this.hallHeight) {
+      const haveRow = this.seats.find(
+        //проверяем есть ли рядом другие места
+        seat => seat.y < coordinate + this.seatWidth && seat.y > coordinate - this.seatWidth
+      )
+  
+      if (!haveRow) {
+        console.log("add row")
+        this.seats = this.seats.concat(this.generateRowSeats(1, this.hallWidth, coordinate))
+      } else {
+        console.log("no add row")
+      }
     }
+   
   }
 
   deleteColumn(index: number): void {
@@ -241,16 +244,19 @@ export class CinemaAdminComponent implements OnInit{
 
   addColumn(index: number): void {
     const coordinate = index + 1
-    //проверяем есть ли рядом другие места
-    const haveRow = this.seats.find(
-      seat => seat.x < coordinate + this.seatWidth && seat.x > coordinate - this.seatWidth
-    )
+    console.log(`add column: ${index + this.seatWidth} ${this.hallWidth} `)
+    if (index + this.seatWidth <= this.hallWidth) {
+      //проверяем есть ли рядом другие места
+      const haveRow = this.seats.find(
+        seat => seat.x < coordinate + this.seatWidth && seat.x > coordinate - this.seatWidth
+      )
 
-    if (!haveRow) {
-      console.log("add row")
-      this.seats = this.seats.concat(this.generateColumnSeats(1, this.hallHeight, coordinate))
-    } else {
-      console.log("no add row")
+      if (!haveRow) {
+        console.log("add row")
+        this.seats = this.seats.concat(this.generateColumnSeats(1, this.hallHeight, coordinate))
+      } else {
+        console.log("no add row")
+      }
     }
   }
 
@@ -277,10 +283,16 @@ export class CinemaAdminComponent implements OnInit{
     //есть ли поблизости другие сиденья
     const coordinateX = j + 1
     const coordinateY = i + 1
+
+    console.log(`coordinate x+: ${coordinateX + this.seatWidth - 1} width: ${this.hallWidth}`)
+    console.log(`coordinate y-: ${coordinateY + this.seatWidth - 1} haight: ${this.hallHeight}`)
+    if (coordinateX + this.seatWidth - 1 > this.hallWidth || coordinateY + this.seatWidth - 1 > this.hallHeight) {
+      elem.style.backgroundColor = ""
+      return 
+    }
+
     const haveCollision = this.seats.find((seat, index)=> {
-
       //console.log(`${seat.x} ${this.seatWidth + coordinateX} ${coordinateX - this.seatWidth}`)
-
       if (index === this.draggableElemIndex) return false
 
       if (seat.x < coordinateX + this.seatWidth && seat.x > coordinateX - this.seatWidth)
