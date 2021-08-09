@@ -41,8 +41,8 @@ export class CinemaAdminComponent implements OnInit{
   private adminHall!: ElementRef*/
 
   //elemAction!: MenuItem[]
-  seatWidth = 2
-  formSeatWidth = 2
+  seatWidth = 1
+  formSeatWidth = 1
 
   seat: Seat = {
     x: 4,
