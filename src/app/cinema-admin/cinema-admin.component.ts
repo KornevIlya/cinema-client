@@ -139,7 +139,7 @@ export class CinemaAdminComponent implements OnInit{
   private setStyle() {
     //высота на 20% больше ширины
     this.styleHall = {
-      width: `${this.hallWidth * this.hallScale}px`,
+      width: `${(this.hallWidth + 1) * this.hallScale}px`,
       height: `${this.hallHeight * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
     }
 

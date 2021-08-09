@@ -8,21 +8,24 @@
 .admin {
     &-container {
         width: 800px;
-        height: 800px;
+       // height: 800px;
         margin: 0 auto;
         padding-top: 50px;
        
     }
 
     &-hall {
-        width: 800px;
-        height: 800px;
+       // width: 800px;
+        //height: 800px;
         position: relative;
         margin: 0 auto;
        
         &-buttons {
-            display: flex;
-            &-container {
+            &-vertical {
+                position: relative;
+                left: -120px;
+            }
+            &-horizontal {
                 display: flex;
                 flex-direction: row;
             }
