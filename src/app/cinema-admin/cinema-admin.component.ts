@@ -33,10 +33,11 @@ export class CinemaAdminComponent implements OnInit{
   //сранит реальные ширину и высоту 
 
   //depricated
-  styleHall: HallStyle = { height: "", width: ""}
+  styleHall: HallStyle = { height: "", width: "" } 
 
-  styleElem: HallStyle = { height: "", width: ""}
-  buttonContainerStyle: HallStyle = { height: "", width: ""}
+  styleElem: HallStyle = { height: "", width: "" }
+  styleInnerElem: HallStyle = { height: "", width: "" }
+  buttonContainerStyle: HallStyle = { height: "", width: "" }
   /*@ViewChild('adminHall')
   private adminHall!: ElementRef*/
 
@@ -62,11 +63,30 @@ export class CinemaAdminComponent implements OnInit{
   private selectedSeats: Seat[] = []
 
   constructor(public dialogService: DialogService) { 
-    this.generateSeats()
-    
+    //this.generateSeats()
+    this.generateAllElements()
     this.setHeightCount()
     this.setWidthCount()
   }
+
+
+
+
+  allElements: { height: string, width: string, top: string, left: string }[] = []
+
+  private generateAllElements() {
+    for (let i = 0; i < this.hallHeight; i++) {
+      for (let j = 0; j < this.hallWidth; j++) {
+        this.allElements.push({
+          width: `${this.hallScale * this.seatWidth}px`,
+          height: `${(this.hallScale + Math.round(this.hallScale * 0.2)) * this.seatWidth}px`,
+          left: `${j * this.scale}px`,
+          top: `${i * this.scale}px`
+        })
+      }
+    }
+  }
+
 
   show(seat: Seat) {
     const ref = this.dialogService.open(EditSeatComponent, {
@@ -124,8 +144,17 @@ export class CinemaAdminComponent implements OnInit{
     }
 
     this.styleElem = {
-      width: `${this.hallScale}px`,
-      height: `${this.hallScale + Math.round(this.hallScale * 0.2)}px`
+      width: `${this.hallScale * this.seatWidth}px`,
+      height: `${(this.hallScale + Math.round(this.hallScale * 0.2)) * this.seatWidth}px`
+    }
+
+    const innerSize = Math.round(this.scale * 0.8)
+    const innerWidth = innerSize * this.seatWidth
+
+
+    this.styleInnerElem = {
+      width: `${innerWidth}px`,
+      height: `${innerWidth}px`
     }
 
     this.buttonContainerStyle =  {
@@ -149,7 +178,7 @@ export class CinemaAdminComponent implements OnInit{
     this.scale = this.hallScale
     this.setWidthCount()
     this.setHeightCount()
-    this.generateSeats()
+    //this.generateSeats()
   }
   
   private setHeightCount() {
@@ -269,30 +298,24 @@ export class CinemaAdminComponent implements OnInit{
     })
   }
 
-
-
-
   /* drag and drop */
-
-  //private draggableElem: Seat | null = null
 
   private draggableElemIndex: number = -1
 
-  onDrop(elem: any, i: number, j: number) {
+  onDrop(elem: any, i: number) {
     console.log("drop")
-    //есть ли поблизости другие сиденья
-    const coordinateX = j + 1
-    const coordinateY = i + 1
+    const dropppable = this.allElements[i]
+    const coordinateX = parseInt(dropppable.left) / this.scale + 1
+    const coordinateY = parseInt(dropppable.top) / (this.scale + Math.round(this.scale * 0.2)) + 1
 
-    console.log(`coordinate x+: ${coordinateX + this.seatWidth - 1} width: ${this.hallWidth}`)
-    console.log(`coordinate y-: ${coordinateY + this.seatWidth - 1} haight: ${this.hallHeight}`)
-    if (coordinateX + this.seatWidth - 1 > this.hallWidth || coordinateY + this.seatWidth - 1 > this.hallHeight) {
-      elem.style.backgroundColor = ""
+    /*if (coordinateX + this.seatWidth - 1 > this.hallWidth || coordinateY + this.seatWidth - 1 > this.hallHeight) {
+      elem.children[0].backgroundColor = ""
+      elem.style.zIndex = ""
       return 
-    }
+    }*/
 
     const haveCollision = this.seats.find((seat, index)=> {
-      //console.log(`${seat.x} ${this.seatWidth + coordinateX} ${coordinateX - this.seatWidth}`)
+    
       if (index === this.draggableElemIndex) return false
 
       if (seat.x < coordinateX + this.seatWidth && seat.x > coordinateX - this.seatWidth)
@@ -310,16 +333,18 @@ export class CinemaAdminComponent implements OnInit{
         }
       }
     }
-  
-    elem.style.backgroundColor = ""
+    elem.children[0].style.backgroundColor = ""
+    elem.style.zIndex = ""
   }
 
   onDragEnter(elem: any) {
-    elem.style.backgroundColor = "red"
+    elem.children[0].style.backgroundColor = "red"
+    elem.style.zIndex = "3"
   }
 
   onDragLeave(elem: any) {
-    elem.style.backgroundColor = ""
+    elem.children[0].style.backgroundColor = ""
+    elem.style.zIndex = ""
   }
 
   onDragStart(index: number) {
@@ -330,4 +355,6 @@ export class CinemaAdminComponent implements OnInit{
     this.draggableElemIndex = -1
     console.log("on drag end")
   }
+
+  /* end drag and drop*/
 }

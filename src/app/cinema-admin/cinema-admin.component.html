@@ -1,7 +1,7 @@
 
 <div class="admin-container">
     <div class="admin-hall"  #adminHall>
-        <div class="admin-grid" *ngFor="let elem of hallHeightCount; let i = index">
+        <!--<div class="admin-grid" *ngFor="let elem of hallHeightCount; let i = index">
             <div class="admin-grid-row" *ngFor="let elem2 of hallWidthCount; let j = index">
                 <div class="admin-grid-elem" 
                     [style]="styleElem" 
@@ -12,18 +12,29 @@
                     (onDragEnter)="onDragEnter(elem)"
                     (onDragLeave)="onDragLeave(elem)"
                 >
-                    <!--<p-contextMenu [target]="elem" appendTo="body" [model]="elemAction"></p-contextMenu>-->
                 </div>
             </div>
             <p-button icon="pi pi-plus" (onClick)="addRow(i)"></p-button>  
             <p-button icon="pi pi-times" (onClick)="deleteRow(i)"></p-button>   
+        </div>-->
+        <div *ngFor="let e of allElements; let i = index">
+            <div class="elem"
+                [style]="e"
+                #elem 
+                pDroppable="seat"
+                (onDrop)="onDrop(elem, i)"
+                (onDragEnter)="onDragEnter(elem)"
+                (onDragLeave)="onDragLeave(elem)"
+            >
+                <div class="elem-inner" [style]="styleInnerElem"></div>
+            </div>
         </div>
-        <div class="admin-hall-buttons-container">
+        <!--<div class="admin-hall-buttons-container">
             <div *ngFor="let elem of hallWidthCount; let i = index" class="admin-holl-buttons" [style]="buttonContainerStyle">
                 <p-button icon="pi pi-plus" (onClick)="addColumn(i)"></p-button>
                 <p-button icon="pi pi-times" (onClick)="deleteColumn(i)"></p-button>
             </div>
-        </div>
+        </div>-->
         
         
         <!--<app-seat 

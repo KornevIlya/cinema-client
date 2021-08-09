@@ -1,11 +1,22 @@
+
+.elem {
+    position: absolute;
+    background-color: aqua; 
+    overflow: hidden;
+}
+
 .admin {
     &-container {
         width: 800px;
+        height: 800px;
         margin: 0 auto;
         padding-top: 50px;
+       
     }
 
     &-hall {
+        width: 800px;
+        height: 800px;
         position: relative;
         margin: 0 auto;
        
