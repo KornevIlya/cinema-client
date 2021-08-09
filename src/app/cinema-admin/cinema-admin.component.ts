@@ -256,4 +256,39 @@ export class CinemaAdminComponent implements OnInit{
       //category: SeatCategory.FREE
     })
   }
+
+
+
+
+  /* drag and drop */
+
+  private draggableElem: any
+
+  onDrop(elem: any, i: number, j: number) {
+    console.log("drop")
+    if (this.draggableElem) {
+      this.seat = {
+        x: j + 1,
+        y: i + 1
+      }
+    }
+    elem.style.backgroundColor = ""
+  }
+
+  onDragEnter(elem: any) {
+    elem.style.backgroundColor = "red"
+  }
+
+  onDragLeave(elem: any) {
+    elem.style.backgroundColor = ""
+  }
+
+  onDragStart(elem: any) {
+    console.log("on drag statt")
+    this.draggableElem = elem
+  }
+  onDragEnd() {
+    console.log("on drag end")
+    this.draggableElem = null
+  }
 }

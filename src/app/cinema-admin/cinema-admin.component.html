@@ -3,7 +3,15 @@
     <div class="admin-hall"  #adminHall>
         <div class="admin-grid" *ngFor="let elem of hallHeightCount; let i = index">
             <div class="admin-grid-row" *ngFor="let elem2 of hallWidthCount; let j = index">
-                <div class="admin-grid-elem" [style]="styleElem" #elem (dblclick)="addElem(i, j)">
+                <div class="admin-grid-elem" 
+                    [style]="styleElem" 
+                    #elem 
+                    (dblclick)="addElem(i, j)"
+                    pDroppable="seat"
+                    (onDrop)="onDrop(elem, i, j)"
+                    (onDragEnter)="onDragEnter(elem)"
+                    (onDragLeave)="onDragLeave(elem)"
+                >
                     <!--<p-contextMenu [target]="elem" appendTo="body" [model]="elemAction"></p-contextMenu>-->
                 </div>
             </div>
@@ -24,6 +32,9 @@
             [width]="seatWidth"
             #seatRef 
             (click)="click(seat)"
+            pDraggable="seat"
+            (onDragStart)="onDragStart(seatRef)"
+            (onDragEnd)="onDragEnd()"
         ></app-seat>
         <!--<div *ngFor="let seat of seats">
             <app-seat [seat]="seat" [scale]="scale" [width]="seatWidth" #seatRef></app-seat>

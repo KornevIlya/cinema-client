@@ -17,6 +17,7 @@ import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DragDropModule } from 'primeng/dragdrop';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     DynamicDialogModule,
     InputTextModule,
     DropdownModule,
-    CheckboxModule
+    CheckboxModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]
