@@ -26,19 +26,24 @@
         </div>
         
         
-        <app-seat 
+        <!--<app-seat 
             [seat]="seat" 
             [scale]="scale"
             [width]="seatWidth"
-            #seatRef 
-            (click)="click(seat)"
             pDraggable="seat"
-            (onDragStart)="onDragStart(seatRef)"
+            (onDragStart)="onDragStart(seat)"
             (onDragEnd)="onDragEnd()"
-        ></app-seat>
-        <!--<div *ngFor="let seat of seats">
-            <app-seat [seat]="seat" [scale]="scale" [width]="seatWidth" #seatRef></app-seat>
-        </div>-->
+        ></app-seat>-->
+        <div *ngFor="let seat of seats; let i = index">
+            <app-seat 
+                [seat]="seat" 
+                [scale]="scale" 
+                [width]="seatWidth"
+                pDraggable="seat"
+                (onDragStart)="onDragStart(i)"
+                (onDragEnd)="onDragEnd()"
+            ></app-seat>
+        </div>
        
     </div>
 

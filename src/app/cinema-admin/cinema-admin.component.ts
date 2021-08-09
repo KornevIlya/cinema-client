@@ -41,8 +41,8 @@ export class CinemaAdminComponent implements OnInit{
   private adminHall!: ElementRef*/
 
   //elemAction!: MenuItem[]
-  seatWidth = 1
-  formSeatWidth = 1
+  seatWidth = 2
+  formSeatWidth = 2
 
   seat: Seat = {
     x: 4,
@@ -51,7 +51,13 @@ export class CinemaAdminComponent implements OnInit{
     //category: SeatCategory.FREE
   }
 
-  seats: Seat[] = []
+  seats: Seat[] = [{
+    x: 4,
+    y: 4
+  }, {
+    x: 6,
+    y: 8
+  }]
 
   private selectedSeats: Seat[] = []
 
@@ -262,16 +268,37 @@ export class CinemaAdminComponent implements OnInit{
 
   /* drag and drop */
 
-  private draggableElem: any
+  //private draggableElem: Seat | null = null
+
+  private draggableElemIndex: number = -1
 
   onDrop(elem: any, i: number, j: number) {
     console.log("drop")
-    if (this.draggableElem) {
-      this.seat = {
-        x: j + 1,
-        y: i + 1
+    //есть ли поблизости другие сиденья
+    const coordinateX = j + 1
+    const coordinateY = i + 1
+    const haveCollision = this.seats.find((seat, index)=> {
+
+      //console.log(`${seat.x} ${this.seatWidth + coordinateX} ${coordinateX - this.seatWidth}`)
+
+      if (index === this.draggableElemIndex) return false
+
+      if (seat.x < coordinateX + this.seatWidth && seat.x > coordinateX - this.seatWidth)
+        if(seat.y < coordinateY + this.seatWidth && seat.y > coordinateY - this.seatWidth) {
+          return true
+        }
+      return false
+    })
+
+    if (!haveCollision) {
+      if (this.draggableElemIndex !== -1) {
+        this.seats[this.draggableElemIndex] = {
+          x: coordinateX,
+          y: coordinateY
+        }
       }
     }
+  
     elem.style.backgroundColor = ""
   }
 
@@ -283,12 +310,12 @@ export class CinemaAdminComponent implements OnInit{
     elem.style.backgroundColor = ""
   }
 
-  onDragStart(elem: any) {
+  onDragStart(index: number) {
     console.log("on drag statt")
-    this.draggableElem = elem
+    this.draggableElemIndex = index
   }
   onDragEnd() {
+    this.draggableElemIndex = -1
     console.log("on drag end")
-    this.draggableElem = null
   }
 }
