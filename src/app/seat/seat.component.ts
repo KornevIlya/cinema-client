@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, ElementRef, ViewChild } from '@angular/core';
 import { Seat, /*SeatCategory,*/ SeatStyle } from './seat-model';
 //import {MenuItem} from 'primeng/api';
 
@@ -32,8 +32,10 @@ export class SeatComponent implements OnInit, OnChanges {
   innerStyle: any
  // selectSeatCategory!: MenuItem[]
   //private selectedItem: SeatCategory | null = null
+  @ViewChild('seatRef')
+  private seatRef!: ElementRef
 
-  //private isSelect: boolean = false
+  private isSelect: boolean = false
  // private lastBackgroundColor: string = ""
 
   constructor() {
@@ -166,4 +168,15 @@ export class SeatComponent implements OnInit, OnChanges {
     }
     this.isSelect = !this.isSelect
   }*/
+  select(event: any): void {
+    console.log("select")
+    if (event.ctrlKey) {
+      if(!this.isSelect) {
+        this.seatRef.nativeElement.style.backgroundColor = "green"
+      } else {
+        this.seatRef.nativeElement.style.backgroundColor = ""
+      }
+      this.isSelect = !this.isSelect
+    }
+  }
 }

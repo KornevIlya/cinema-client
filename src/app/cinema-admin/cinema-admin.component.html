@@ -1,11 +1,11 @@
 
 <div class="admin-container">
-    <div class="admin-hall"  #adminHall >
+    <div class="admin-hall" #adminHall >
     
         <div [style]="styleHall">
 
             <div class="admin-hall-buttons-vertical">
-                <div *ngFor="let h of hallHeightCount; index as i" [style.height.px]="scale">
+                <div *ngFor="let h of hallHeightCount; index as i" [style.height]="buttonVerticalHeight.height">
                     <p-button icon="pi pi-plus" (onClick)="addRow(i)"></p-button>  
                     <p-button icon="pi pi-times" (onClick)="deleteRow(i)"></p-button>  
                 </div>
@@ -63,9 +63,9 @@
                 pDraggable="seat"
                 (onDragStart)="onDragStart(i)"
                 (onDragEnd)="onDragEnd()"
+                (click)="click(seat, $event)"
             ></app-seat>
         </div>
-       
     </div>
 
 
@@ -114,6 +114,8 @@
         </div>
 
         <p-button label="Применить" (onClick)="updateState()"></p-button>
+
+        <p-button label="Удалить" (onClick)="deleteSelected()"></p-button>
     </div>
     
 </div> 

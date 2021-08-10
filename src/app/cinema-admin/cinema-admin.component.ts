@@ -38,6 +38,7 @@ export class CinemaAdminComponent implements OnInit{
   styleElem: HallStyle = { height: "", width: "" }
   styleInnerElem: HallStyle = { height: "", width: "" }
   buttonContainerStyle: HallStyle = { height: "", width: "" }
+  buttonVerticalHeight: {height: string} = { height: "" }
   /*@ViewChild('adminHall')
   private adminHall!: ElementRef*/
 
@@ -53,22 +54,21 @@ export class CinemaAdminComponent implements OnInit{
   }
 
   seats: Seat[] = [{
+    x: 1,
+    y: 1  
+  }, {
     x: 4,
     y: 4
-  }, {
-    x: 6,
-    y: 8
   }]
 
   private selectedSeats: Seat[] = []
 
   constructor(public dialogService: DialogService) { 
-    //this.generateSeats()
+    this.generateSeats()
     this.generateAllElements()
     this.setHeightCount()
     this.setWidthCount()
   }
-
 
 
 
@@ -81,11 +81,12 @@ export class CinemaAdminComponent implements OnInit{
           width: `${this.hallScale * this.seatWidth}px`,
           height: `${(this.hallScale + Math.round(this.hallScale * 0.2)) * this.seatWidth}px`,
           left: `${j * this.scale}px`,
-          top: `${i * this.scale}px`
+          top: `${i * (this.scale + Math.round(this.hallScale * 0.2))}px`
         })
       }
     }
   }
+
 
 
   show(seat: Seat) {
@@ -140,7 +141,7 @@ export class CinemaAdminComponent implements OnInit{
     //высота на 20% больше ширины
     this.styleHall = {
       width: `${(this.hallWidth + 1) * this.hallScale}px`,
-      height: `${this.hallHeight * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
+      height: `${(this.hallHeight + 1) * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
     }
 
     this.styleElem = {
@@ -160,6 +161,10 @@ export class CinemaAdminComponent implements OnInit{
     this.buttonContainerStyle =  {
       width: `${this.hallScale}px`,
       height: `${this.hallScale * 2}px`
+    }
+
+    this.buttonVerticalHeight = {
+      height: `${(this.hallScale + Math.round(this.hallScale * 0.2))}px`
     }
   }
 
@@ -232,15 +237,31 @@ export class CinemaAdminComponent implements OnInit{
     return seats
   }
 
-  click(seat: Seat): void {
+  click(seat: Seat, event: any): void {
     console.log("click")
-    const indexSeat = this.selectedSeats.indexOf(seat)
-    if (indexSeat === -1) {
-      this.seats.push(seat)
-    } else {
-      this.seats.splice(indexSeat, 1)
+    //console.log(event.ctrlKey)
+    if (event.ctrlKey) {
+      
+      const indexSeat = this.selectedSeats.indexOf(seat)
+      if (indexSeat === -1) {
+        this.selectedSeats.push(seat)
+      } else {
+        this.selectedSeats.splice(indexSeat, 1)
+      }
     }
+    
   }
+
+  deleteSelected() {
+    //console.log(this.selectedSeats)
+    this.selectedSeats.forEach(selected => {
+      const index = this.seats.indexOf(selected)
+      this.seats.splice(index, 1)
+    })
+    this.selectedSeats = []
+  }
+
+
 
   deleteRow(index: number): void {
     const coordinate = index + 1
@@ -250,7 +271,7 @@ export class CinemaAdminComponent implements OnInit{
   addRow(index: number): void {
     const coordinate = index + 1
     console.log(`add row: ${index + this.seatWidth} ${this.hallHeight} `)
-    if (index + this.seatWidth <= this.hallHeight) {
+    if (index /*+ this.seatWidth*/ <= this.hallHeight) {
       const haveRow = this.seats.find(
         //проверяем есть ли рядом другие места
         seat => seat.y < coordinate + this.seatWidth && seat.y > coordinate - this.seatWidth
@@ -274,7 +295,7 @@ export class CinemaAdminComponent implements OnInit{
   addColumn(index: number): void {
     const coordinate = index + 1
     console.log(`add column: ${index + this.seatWidth} ${this.hallWidth} `)
-    if (index + this.seatWidth <= this.hallWidth) {
+    if (index /*+ this.seatWidth*/ <= this.hallWidth) {
       //проверяем есть ли рядом другие места
       const haveRow = this.seats.find(
         seat => seat.x < coordinate + this.seatWidth && seat.x > coordinate - this.seatWidth
@@ -307,7 +328,7 @@ export class CinemaAdminComponent implements OnInit{
     const dropppable = this.allElements[i]
     const coordinateX = parseInt(dropppable.left) / this.scale + 1
     const coordinateY = parseInt(dropppable.top) / (this.scale + Math.round(this.scale * 0.2)) + 1
-
+    console.log(coordinateY)
     /*if (coordinateX + this.seatWidth - 1 > this.hallWidth || coordinateY + this.seatWidth - 1 > this.hallHeight) {
       elem.children[0].backgroundColor = ""
       elem.style.zIndex = ""
