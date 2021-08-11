@@ -5,7 +5,6 @@ import { Seat, /*SeatCategory*/ } from '../seat/seat-model'
 import { EditSeatComponent } from './edit-seat/edit-seat.component';
 //import { MenuItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-cinema-admin',
@@ -62,12 +61,14 @@ export class CinemaAdminComponent implements OnInit{
   }]
 
   private selectedSeats: Seat[] = []
+  private selectedSeatsRef: any[] = []
 
   constructor(public dialogService: DialogService) { 
     this.generateSeats()
     this.generateAllElements()
     this.setHeightCount()
     this.setWidthCount()
+    //console.log(this.adminHall)
   }
 
 
@@ -205,9 +206,11 @@ export class CinemaAdminComponent implements OnInit{
   generateSeats() {
     const seats: Seat[] = []
     //i это координата
-    for (let i = 1; i <= this.hallHeight - this.seatWidth + 1; i += this.seatWidth) {
+    /*for (let i = 1; i <= this.hallHeight - this.seatWidth + 1; i += this.seatWidth) {
       seats.push(...this.generateRowSeats(1, this.hallWidth, i))
     }
+    this.seats = seats*/
+    seats.push(...this.generateRowSeats(1, this.hallWidth, 1))
     this.seats = seats
   }
 
@@ -237,7 +240,7 @@ export class CinemaAdminComponent implements OnInit{
     return seats
   }
 
-  click(seat: Seat, event: any): void {
+  click(seat: Seat, event: any, seatRef: any): void {
     console.log("click")
     //console.log(event.ctrlKey)
     if (event.ctrlKey) {
@@ -245,8 +248,10 @@ export class CinemaAdminComponent implements OnInit{
       const indexSeat = this.selectedSeats.indexOf(seat)
       if (indexSeat === -1) {
         this.selectedSeats.push(seat)
+        this.selectedSeatsRef.push(seatRef)
       } else {
         this.selectedSeats.splice(indexSeat, 1)
+        this.selectedSeatsRef.splice(indexSeat, 1)
       }
     }
     
@@ -323,17 +328,12 @@ export class CinemaAdminComponent implements OnInit{
 
   private draggableElemIndex: number = -1
 
-  onDrop(elem: any, i: number) {
+  onDrop(elem: any, i: number, event: any) {
     console.log("drop")
+    //console.log(event)
     const dropppable = this.allElements[i]
     const coordinateX = parseInt(dropppable.left) / this.scale + 1
     const coordinateY = parseInt(dropppable.top) / (this.scale + Math.round(this.scale * 0.2)) + 1
-    console.log(coordinateY)
-    /*if (coordinateX + this.seatWidth - 1 > this.hallWidth || coordinateY + this.seatWidth - 1 > this.hallHeight) {
-      elem.children[0].backgroundColor = ""
-      elem.style.zIndex = ""
-      return 
-    }*/
 
     const haveCollision = this.seats.find((seat, index)=> {
     
@@ -354,27 +354,37 @@ export class CinemaAdminComponent implements OnInit{
         }
       }
     }
-    elem.children[0].style.backgroundColor = ""
+    elem.firstChild.style.backgroundColor = ""
     elem.style.zIndex = ""
   }
 
-  onDragEnter(elem: any) {
-    elem.children[0].style.backgroundColor = "red"
+  onDragEnter(elem: any, event: any) {
+    console.log("on drag enter")
+    //console.log(event.dataTransfer)
+    elem.firstChild.style.backgroundColor = "red"
     elem.style.zIndex = "3"
   }
 
   onDragLeave(elem: any) {
-    elem.children[0].style.backgroundColor = ""
+    elem.firstChild.style.backgroundColor = ""
     elem.style.zIndex = ""
   }
 
-  onDragStart(index: number) {
-    console.log("on drag statt")
+  onDragStart(index: number, event: any) {
+    console.log("on drag start")
+    //console.log(event)
     this.draggableElemIndex = index
+
+    console.log(this.selectedSeatsRef[1])
+    if (this.selectedSeatsRef.length !== 0) {
+      event.dataTransfer.setData("text/html", this.selectedSeatsRef[1].nativeElement)
+    }
   }
   onDragEnd() {
     this.draggableElemIndex = -1
     console.log("on drag end")
+
+    
   }
 
   /* end drag and drop*/

@@ -15,8 +15,8 @@
                     [style]="e"
                     #elem 
                     pDroppable="seat"
-                    (onDrop)="onDrop(elem, i)"
-                    (onDragEnter)="onDragEnter(elem)"
+                    (onDrop)="onDrop(elem, i, $event)"
+                    (onDragEnter)="onDragEnter(elem, $event)"
                     (onDragLeave)="onDragLeave(elem)"
                 >
                     <div class="elem-inner" [style]="styleInnerElem"></div>
@@ -61,9 +61,11 @@
                 [scale]="scale" 
                 [width]="seatWidth"
                 pDraggable="seat"
-                (onDragStart)="onDragStart(i)"
+                #seatRef
+                dragEffect="move"
+                (onDragStart)="onDragStart(i, $event)"
                 (onDragEnd)="onDragEnd()"
-                (click)="click(seat, $event)"
+                (click)="click(seat, $event, seatRef)"
             ></app-seat>
         </div>
     </div>
