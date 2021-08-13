@@ -18,6 +18,7 @@ interface SeatStyle {
 interface Seat {
     x: number,
     y: number,
+    row: number,
     price?: number,
     //category: SeatCategory
     width?: number,

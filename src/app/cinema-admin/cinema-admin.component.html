@@ -1,8 +1,8 @@
 
-<div class="admin-container">
+<div class="admin-container" (mousemove)="mouseMove($event)">
     <div class="admin-hall" #adminHall >
     
-        <div [style]="styleHall">
+        <div [style]="style.hall">
 
             <div class="admin-hall-buttons-vertical">
                 <div *ngFor="let h of hallHeightCount; index as i" [style.height]="buttonVerticalHeight.height">
@@ -10,69 +10,46 @@
                     <p-button icon="pi pi-times" (onClick)="deleteRow(i)"></p-button>  
                 </div>
             </div>
-            <div *ngFor="let e of allElements; let i = index">
-                <div class="elem"
-                    [style]="e"
-                    #elem 
-                    pDroppable="seat"
-                    (onDrop)="onDrop(elem, i, $event)"
-                    (onDragEnter)="onDragEnter(elem, $event)"
-                    (onDragLeave)="onDragLeave(elem)"
+            <div *ngFor="let elem of selectRowButton"
+                class="admin-hall-buttons-select"
+                [style] = "elem.style"
+            >
+                <p-button icon="pi pi-chevron-right" 
+                    (onClick)="selectRow(elem.row)"
                 >
-                    <div class="elem-inner" [style]="styleInnerElem"></div>
-                </div>
+                    {{elem.row}}
+                </p-button>
+            </div>
+            
+            <div *ngFor="let e of allElements; let i = index"
+                class="elem dropable"
+                [style]="e"
+            >
+                <div class="elem-inner" [style]="style.innerElem"></div>
             </div>
         </div>
-        <!--<div class="admin-grid" *ngFor="let elem of hallHeightCount; let i = index">
-            <div class="admin-grid-row" *ngFor="let elem2 of hallWidthCount; let j = index">
-                <div class="admin-grid-elem" 
-                    [style]="styleElem" 
-                    #elem 
-                    (dblclick)="addElem(i, j)"
-                    pDroppable="seat"
-                    (onDrop)="onDrop(elem, i, j)"
-                    (onDragEnter)="onDragEnter(elem)"
-                    (onDragLeave)="onDragLeave(elem)"
-                >
-                </div>
-            </div>
-             
-        </div>-->
         
-        <div class="admin-hall-buttons-horizontal">
+        <!--<div class="admin-hall-buttons-horizontal">
             <div *ngFor="let elem of hallWidthCount; let i = index" [style]="buttonContainerStyle">
                 <p-button icon="pi pi-plus" (onClick)="addColumn(i)"></p-button>
                 <p-button icon="pi pi-times" (onClick)="deleteColumn(i)"></p-button>
             </div>
-        </div>
+        </div>-->
         
-        
-        <!--<app-seat 
-            [seat]="seat" 
-            [scale]="scale"
+        <app-seat *ngFor="let elem of data; let i = index;"
+            [seat]="elem.seat" 
+            [scale]="scale" 
             [width]="seatWidth"
-            pDraggable="seat"
-            (onDragStart)="onDragStart(seat)"
-            (onDragEnd)="onDragEnd()"
-        ></app-seat>-->
-        <div *ngFor="let seat of seats; let i = index">
-            <app-seat 
-                [seat]="seat" 
-                [scale]="scale" 
-                [width]="seatWidth"
-                pDraggable="seat"
-                #seatRef
-                dragEffect="move"
-                (onDragStart)="onDragStart(i, $event)"
-                (onDragEnd)="onDragEnd()"
-                (click)="click(seat, $event, seatRef)"
-            ></app-seat>
-        </div>
+            (mousedown)="mouseDown($event, i)"
+            (mouseup)="mouseUp($event, i)"
+            draggable="true"
+            (dragstart)="dragStart()"
+            (setElem)="setElem($event, i)"
+        ></app-seat>
     </div>
 
 
     <div class="admin-form">
-        <!--<p-button label="Сгенерировать" (onClick)="generateSeats()"></p-button>-->
         <div class="admin-form-group">
             <label for="hallWidth">Ширина зала</label>
             <p-inputNumber 
@@ -116,17 +93,6 @@
         </div>
 
         <p-button label="Применить" (onClick)="updateState()"></p-button>
-
-        <p-button label="Удалить" (onClick)="deleteSelected()"></p-button>
     </div>
     
 </div> 
-<!--<div class="eat-container">
-    <div  class="eat">
-        <div #eat class="context">
-
-        </div>
-        <p-contextMenu [target]="eat" [model]="items" appendTo="body"></p-contextMenu>
-    </div>
-    
-</div>-->
