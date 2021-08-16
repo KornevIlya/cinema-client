@@ -1,5 +1,8 @@
 
-<div class="seat" [style]="style" #seatRef>
+<div [ngClass]="isSelected ? 'seat seat-selected' : 'seat'"
+    [style]="style"
+    #seatRef
+>
     {{seat.row}} / {{seat.number}}
 </div>
 <!--<div class="seat" [style]="style">

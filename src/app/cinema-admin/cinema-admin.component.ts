@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core'
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, HostListener } from '@angular/core'
 
 import { HallStyle } from './cinema-admin-models'
 import { Seat, Single, Sofa, SeatType} from '../seat/seat-model'
@@ -32,7 +32,8 @@ type Data = {
   elem: HTMLElement | null,
   position: Position
   size: Size,
-  innerSize: Size
+  innerSize: Size,
+  isSelected: boolean
 }
 
 type SizePosition = {
@@ -226,8 +227,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.shiftContainerX = this.adminHall.nativeElement.offsetLeft
-    this.shiftContainerY = this.adminHall.nativeElement.offsetTop
+    this.shiftContainerX = Math.floor(this.adminHall.nativeElement.offsetLeft)
+    this.shiftContainerY = Math.floor(this.adminHall.nativeElement.offsetTop)
   }
 
   private moveElemTo(elem: HTMLElement, x: number, y: number): void {
@@ -284,17 +285,23 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   mouseMove(event: MouseEvent) {
     if (this.isMovable) {
       //перемещаем выбранный элемент
-      const innerX = event.pageX - this.shiftContainerX - this.shiftCursorX
-      const innerY = event.pageY - this.shiftContainerY - this.shiftCursorY
+      const innerX = Math.floor(event.pageX - this.shiftContainerX - this.shiftCursorX)
+      const innerY = Math.floor(event.pageY - this.shiftContainerY - this.shiftCursorY)
 
+      //console.log(innerX + " " + innerY)
       const beforeX = parseInt(this.movableSeat!.style.left)
       const beforeY = parseInt(this.movableSeat!.style.top)
+      //console.log(innerX + " " + innerY)
       this.moveElemTo(this.movableSeat!, innerX, innerY)
       const afterX = parseInt(this.movableSeat!.style.left)
       const afterY = parseInt(this.movableSeat!.style.top)
-
+      
+      
+      //int
       const delX = beforeX - afterX
       const delY = beforeY - afterY
+
+      //console.log(`${afterX} ${afterY}`)
 
       let localError = false
 
@@ -303,12 +310,17 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         //console.log(droppable)
         //let droppable = droppableArray[0]
 
+        //fint
         let targetX = this.shiftCursorX
         let targetY = this.shiftCursorY
 
+        ///console.log(targetX + " " + targetY)
+
         if (selected !== this.movableSeat) {
+
           const moveToX = this.data[index].position.x - delX
           const moveToY = this.data[index].position.y - delY
+          //console.log(moveToX + " " + moveToY)
           this.moveElemTo(selected, moveToX, moveToY)
 
           this.data[index].position.x = moveToX 
@@ -332,17 +344,22 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
           selected.style.visibility = "hidden"
           //смотрим элемент под сиденем (перетаскиваемый объект)
-          console.log(targetX)
+          //console.log(targetX)
           let elemBelow = document.elementFromPoint(targetX + this.shiftContainerX, targetY + this.shiftContainerY)
           //selected.hidden = false
+          //console.log(`${targetX + this.shiftContainerX} ${targetY + this.shiftContainerY}`)
           selected.style.visibility = ""
 
           let droppable = droppableArray[0]
+
+          /**if (droppableArray)
+           droppable.style.zIndex = ""*/
           if (!elemBelow) return
 
           let droppableBelow = elemBelow.closest('.dropable')
           
           if (droppableBelow === null) {
+            //console.log("null")
             localError = true
           } else {
             if (!this.dropedCorrect(index, droppableBelow as HTMLElement)){
@@ -380,16 +397,25 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           /*const innerSize = Math.round(this.scale * 0.8)
           const innerWidth = innerSize * this.seatWidth*/
           droppableArray.forEach((droppable, index) => {
-            
+          
             const currShiftX = leftCoordinate + (delShiftX + ( this.scale * 2 * index))
 
             //console.log(currShiftX + " " + index)
 
             selected.style.visibility = "hidden"
+            /*this.selectedSeats.forEach(selected => {
+              const [htmlElem] =  selected
+              htmlElem.style.visibility = "hidden"
+            })*/
             //смотрим элемент под сиденем (перетаскиваемый объект)
             let elemBelow = document.elementFromPoint(currShiftX + this.shiftContainerX, targetY + this.shiftContainerY)
+            //console.log(`${currShiftX + this.shiftContainerX} ${targetY + this.shiftContainerY}`)
             selected.style.visibility = ""
 
+            /*this.selectedSeats.forEach(selected => {
+              const [htmlElem] =  selected
+              htmlElem.style.visibility = ""
+            })*/
             if (!elemBelow) return
 
             let droppableBelow = elemBelow.closest('.dropable')
@@ -418,7 +444,6 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
             newDroppable.push(droppable)
           })
-          //console.log(newDroppable)
           this.selectedSeats[i] = [selected, newDroppable, index, initPoint]
         }
       }
@@ -444,7 +469,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       }
 
       const seat =  this.data[index].elem!
-
+      this.data[index].isSelected = true
       //seat.style.visibility = 'hidden'
 
       const init: Position = {
@@ -470,8 +495,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       //console.log(this.selectedSeats)
       this.movableSeat = seat
       //мещение курсора внутри сиденья
-      this.shiftCursorX = event.clientX - seat.getBoundingClientRect().left
-      this.shiftCursorY = event.clientY - seat.getBoundingClientRect().top
+      this.shiftCursorX = Math.floor(event.clientX) - Math.floor(seat.getBoundingClientRect().left)
+      this.shiftCursorY = Math.floor(event.clientY) - Math.floor(seat.getBoundingClientRect().top)
     }
   }
 
@@ -482,12 +507,14 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     const leftButton = 0 
     if (event.button === leftButton) {
       this.isMovable = false
-
+      
       if (!event.ctrlKey) {
+        //this.data[index].isSelected = false
         this.selectedSeats.forEach(([selected, target, i, initPoint]) => {
   
           selected.style.zIndex = ""
           
+          this.data[i].isSelected = false
           /*if (target){
             target.firstChild.style.backgroundColor = ''
             target.style.zIndex = ""
@@ -575,6 +602,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
     this.data.forEach((elem, index) => {
       if (elem.seat.row === row) {
+        this.data[index].isSelected = true
+
         this.selectedSeats.push([
           elem.elem!,
           dropable,
@@ -627,8 +656,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     const innerWidth = innerSize * this.seatWidth
     this.style = {
       hall: {
-        width: `${(this.hallWidth + 1) * this.hallScale}px`,
-        height: `${(this.hallHeight + 1) * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
+        width: `${(this.hallWidth + this.seatWidth) * this.hallScale}px`,
+        height: `${(this.hallHeight + this.seatWidth) * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
       },
       innerElem: {
         width: `${innerWidth}px`,
@@ -667,6 +696,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   updateState() {
     this.scale = this.hallScale
+    this.seatWidth = this.formSeatWidth
     this.setWidthCount()
     this.setHeightCount()
     this.generateNewData()
@@ -767,7 +797,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     const innerWidth = innerSize * this.seatWidth
 
     const del = countSeat ? this.seatWidth * countSeat : this.seatWidth
-    for (let i = 0, seatNumber = 1 ; i < this.hallWidth; i += del, seatNumber++) {
+
+    const end = countSeat ? this.hallWidth - countSeat : this.hallWidth
+    for (let i = 0, seatNumber = 1 ; i < end; i += del, seatNumber++) {
       dataRow.push({ 
         seat: {
           x: i + 1,
@@ -788,7 +820,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           width: `${innerWidth}px`,
           height: `${innerWidth}px`
         },
-        elem: null
+        elem: null,
+        isSelected: false
       })
     }
 
@@ -807,7 +840,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     const coordinate = index + 1
 
     const currentRow = this.data.find(({ seat }) => seat.y === coordinate)
-    this.selectRowButton = this.selectRowButton
+    if(currentRow) {
+      this.selectRowButton = this.selectRowButton
       .filter(({ row }) => row !== currentRow!.seat.row)
       .map(elem => {
         if (elem.row > currentRow!.seat.row) {
@@ -817,7 +851,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         return elem
       })
 
-    this.data = this.data
+      this.data = this.data
       .filter(({ seat} ) => seat.y !== coordinate)
       .map(elem => {
         if (elem.seat.row > currentRow!.seat.row) {
@@ -826,6 +860,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         }
         return elem
       })
+    }
+    
 
     //this.generateSelectRowButtons()
   }
@@ -913,4 +949,10 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   showButtons(ref: HTMLDivElement) {
     ref.classList.toggle("admin-hall-buttons-show-show")
   } 
+
+  @HostListener('window:resize')
+  resize() {
+    this.shiftContainerX = Math.floor(this.adminHall.nativeElement.offsetLeft)
+    this.shiftContainerY = Math.floor(this.adminHall.nativeElement.offsetTop)
+  }
 }

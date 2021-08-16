@@ -1,5 +1,5 @@
 
-<div class="admin-container" (mousemove)="mouseMove($event)" id="kek">
+<div class="admin-container" (mousemove)="mouseMove($event)">
     <div class="admin-hall" #adminHall >
     
         <div [style]="style.hall">
@@ -58,6 +58,7 @@
             [seat]="elem.seat" 
             [scale]="scale" 
             [width]="seatWidth"
+            [isSelected]="elem.isSelected"
             (mousedown)="mouseDown($event, i)"
             (mouseup)="mouseUp($event, i)"
             draggable="true"
@@ -72,7 +73,7 @@
         <div class="admin-form-group">
             <label for="hallWidth">Ширина зала</label>
             <p-inputNumber 
-                [(ngModel)]="hallHeight"
+                [(ngModel)]="hallWidth"
                 inputId="hallWidth" 
                 [useGrouping]="false"
                 [min]="1"

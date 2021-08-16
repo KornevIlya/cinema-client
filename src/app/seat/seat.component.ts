@@ -14,7 +14,7 @@ export class SeatComponent implements OnInit, OnChanges, AfterViewInit {
   @Input("width") seatWidth: number = 1
   @Input() seat!: Seat
   @Input("scale") seatScale!: number
-
+  @Input() isSelected: boolean = false
   @Output() setElem = new EventEmitter<HTMLElement | null>()
 
   style: SeatStyle
@@ -22,8 +22,6 @@ export class SeatComponent implements OnInit, OnChanges, AfterViewInit {
 
   @ViewChild('seatRef')
   private seatRef!: ElementRef
-
-  private isSelect: boolean = false
 
   constructor() {
     this.style = {
@@ -49,6 +47,7 @@ export class SeatComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   updateStyle() {
+    //console.log(this.seatWidth)
     //длина элемента на 20% больше ширины
     const del = Math.round(this.seatScale * 0.2)
 
@@ -57,12 +56,12 @@ export class SeatComponent implements OnInit, OnChanges, AfterViewInit {
 
     const innerSize = Math.round(this.seatScale * 0.8)
     const innerHeight = innerSize * this.seatWidth
-    let innerWidth = innerSize * this.seatWidth + (this.seatScale * (this.seat.type.countSeat - 1))
+    let innerWidth // = innerSize * this.seatWidth + (this.seatScale * (this.seat.type.countSeat - 1))
 
     if(this.seat.type.countSeat === 1) {
       innerWidth = innerSize * this.seatWidth
     } else {
-      innerWidth = innerSize * this.seatWidth + (this.seatScale * this.seat.type.countSeat)
+      innerWidth = innerSize * this.seatWidth + (this.seatScale * (this.seat.type.countSeat - 1) * this.seatWidth)
     }
 
     this.style = {
