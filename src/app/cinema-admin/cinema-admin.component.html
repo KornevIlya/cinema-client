@@ -6,6 +6,7 @@
 
             <div class="admin-hall-buttons-vertical">
                 <div *ngFor="let h of hallHeightCount; index as i" [style.height]="buttonVerticalHeight.height">
+                    <p-button icon="pi pi-table" (onClick)="addRow(i, 2)"></p-button>
                     <p-button icon="pi pi-plus" (onClick)="addRow(i)"></p-button>  
                     <p-button icon="pi pi-times" (onClick)="deleteRow(i)"></p-button>  
                 </div>
