@@ -1,5 +1,5 @@
 
-<div class="admin-container" (mousemove)="mouseMove($event)">
+<div class="admin-container" (mousemove)="mouseMove($event)" id="kek">
     <div class="admin-hall" #adminHall >
     
         <div [style]="style.hall">
@@ -10,6 +10,23 @@
                     <p-button icon="pi pi-times" (onClick)="deleteRow(i)"></p-button>  
                 </div>
             </div>
+            <!-- <div *ngFor="let s of style.showButtonInner; index as i" 
+                class="admin-hall-buttons-show"
+                [style]="style.showButton"
+                #showButtonsRef
+                
+            >
+                 <div class="admin-hall-buttons-show-inner" [style]="style.showButtonInner">
+                   
+                </div>
+                <p-button icon="pi pi-caret-right" [style]="s" (onClick)="showButtons(showButtonsRef)"></p-button>
+                <div class="admin-hall-buttons-show-inner-content">
+                    <p-button icon="pi pi-plus" (onClick)="addRow(i)"></p-button>
+                    <p-button icon="pi pi-times" (onClick)="deleteRow(i)"></p-button> 
+                    
+                </div>
+            </div> -->
+            
             <div *ngFor="let elem of selectRowButton"
                 class="admin-hall-buttons-select"
                 [style] = "elem.style"
@@ -48,12 +65,13 @@
         ></app-seat>
     </div>
 
-
+    <div>
+    </div>
     <div class="admin-form">
         <div class="admin-form-group">
             <label for="hallWidth">Ширина зала</label>
             <p-inputNumber 
-                [(ngModel)]="hallWidth"  
+                [(ngModel)]="hallHeight"
                 inputId="hallWidth" 
                 [useGrouping]="false"
                 [min]="1"

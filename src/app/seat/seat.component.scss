@@ -1,16 +1,21 @@
 
 .seat {
     position: absolute;
-    background-color: cornsilk;
-    border: 1px solid darkmagenta;
     z-index: 5;
-    &-inner {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid darkmagenta;
+    background-color: cornsilk;
+    /*&-inner {
         //width: 80%;
         //height: 80%;
         border: 1px solid darkmagenta;
         margin: 0 auto;
         background-color: cornsilk;
-    }
+    }*/
 }
 
 /*.icon {

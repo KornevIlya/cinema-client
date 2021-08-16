@@ -34,6 +34,38 @@
                 position: absolute;
                 background-color: lightcoral;
             }
+            &-show {
+                position: relative;
+                left: -50px;
+                //width: 50px;
+                &-show {
+                    left: -170px;
+                    z-index: 15;
+                }
+                display: flex;
+                &-inner{
+                    width: inherit;
+                    background-color: lightgreen;
+                    width: 50px;
+                    
+                    //overflow: hidden;
+                    &-content {
+                        //background-color: lightsalmon;
+                        //width: 200px;
+                        //height: 100px;
+                        display: flex;
+                        margin-left: 20px;
+                        
+                        &-elem {
+                            width: 100px;
+                            height: 100px;
+                            margin-left: 25px;
+                            background-color: lightsalmon;
+                        }
+                    }
+                }
+                
+            }
         }
     }
 
@@ -58,3 +90,7 @@
         }
     }
 }
+
+/*::ng-deep .p-speeddial-button {
+   font-size: 12px;
+}*/

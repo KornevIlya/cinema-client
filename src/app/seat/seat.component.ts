@@ -56,10 +56,17 @@ export class SeatComponent implements OnInit, OnChanges, AfterViewInit {
     const top = (this.seat.y - 1) * (this.seatScale + del)
 
     const innerSize = Math.round(this.seatScale * 0.8)
-    const innerWidth = innerSize * this.seatWidth
+    const innerHeight = innerSize * this.seatWidth
+    let innerWidth = innerSize * this.seatWidth + (this.seatScale * (this.seat.type.countSeat - 1))
+
+    if(this.seat.type.countSeat === 1) {
+      innerWidth = innerSize * this.seatWidth
+    } else {
+      innerWidth = innerSize * this.seatWidth + (this.seatScale * this.seat.type.countSeat)
+    }
 
     this.style = {
-      height: `${innerWidth}px`,
+      height: `${innerHeight}px`,
       width: `${innerWidth}px`,
       left: `${left}px`,
       top: `${top}px`,

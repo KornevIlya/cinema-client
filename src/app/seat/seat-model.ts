@@ -19,9 +19,48 @@ interface Seat {
     x: number,
     y: number,
     row: number,
+    number: number
+    type: Single | Sofa
     price?: number,
     //category: SeatCategory
     width?: number,
 }
 
-export { SeatStyle, Seat, /*SeatCategory*/}
+enum SeatType {
+    SINGLE,
+    SOFA
+}
+
+class Single {
+    get type() {
+        return SeatType.SINGLE
+    }
+    get countSeat() {
+        return 1
+    }
+}
+
+class Sofa {
+    private count: number  = 2
+
+    constructor(count?: number) {
+        if(count) {
+            this.countSeat = count
+        }
+    }
+
+    set countSeat(countSeat: number) {
+        if (countSeat > 0) {
+            this.count = countSeat
+        }
+    }
+    get countSeat(): number {
+        return this.count
+    }
+
+    get type() {
+        return SeatType.SOFA
+    }
+}
+
+export { SeatStyle, Seat, Single, Sofa, SeatType/*SeatCategory*/}

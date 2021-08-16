@@ -1,8 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core'
 
 import { HallStyle } from './cinema-admin-models'
-import { Seat} from '../seat/seat-model'
+import { Seat, Single, Sofa, SeatType} from '../seat/seat-model'
 import { EditSeatComponent } from './edit-seat/edit-seat.component';
+
 import { DialogService } from 'primeng/dynamicdialog';
 
 type Position = {
@@ -19,6 +20,10 @@ type SelectedSeat = [
 type Size = {
   height: string,
   width: string
+}
+
+type Height = {
+  height: string
 }
 
 type Data = {
@@ -44,14 +49,16 @@ type SelectedRowButton = {
 type CommonStyle = {
   hall: Size
   innerElem: Size,
-  //buttonContainer: Size 
+  //buttonContainer: Size,
+  showButton: Height,
+  showButtonInner: Height[]
 }
 
 @Component({
   selector: 'app-cinema-admin',
   templateUrl: './cinema-admin.component.html',
   styleUrls: ['./cinema-admin.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService],
 })
 
 export class CinemaAdminComponent implements OnInit, AfterViewInit {
@@ -71,22 +78,17 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   hallWidthCount: number[] = []
   hallHeightCount: number[] = []
 
-  //styleHall: HallStyle = { height: "", width: "" } 
-
-  //styleElem: HallStyle = { height: "", width: "" }
-  //styleInnerElem: HallStyle = { height: "", width: "" }
-  //buttonContainerStyle: HallStyle = { height: "", width: "" }
   buttonVerticalHeight: {height: string} = { height: "" }
 
   style: CommonStyle = {
     hall: { height: "", width: "" },
     innerElem: { height: "", width: "" },
     //buttonContainer: { height: "", width: "" }
+    showButton: { height: "" },
+    showButtonInner: [],
   }
   
   selectRowButton: SelectedRowButton[] = []
-  //стили для кнопок которые выделяют ряды
-  ///selectedButtonsStyle: [] = []
 
   /* start my drag and drop */
 
@@ -178,9 +180,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.setStyle()
-
-    //ошибка
     this.generateSelectRowButtons()
+
   }
 
   /* start my drag and drop*/ 
@@ -194,6 +195,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     let row = 1
     for (let i = 0; i < this.seatWidth; i += this.seatWidth) {
       newData.push(...this.generateDataRow(i, row++))
+      newData.push(...this.generateDataRow(i + this.seatWidth, row++, 2))
       /*for (let j = 0; j < this.hallWidth; j += this.seatWidth) {
         newData.push({ 
           seat: {
@@ -270,7 +272,13 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       //console.log(`${position.x + (this.hallScale * this.seatWidth)} ${x}`)
      
       const leftBorder = position.x - (this.hallScale * this.seatWidth)
-      const rightBorder = position.x + (this.hallScale * this.seatWidth)
+      let rightBorder
+      //const rightBorder = position.x + (this.hallScale * this.seatWidth)
+      if (elem.seat.type.type === SeatType.SINGLE) {
+        rightBorder = position.x + (this.hallScale * this.seatWidth)
+      } else {
+        rightBorder = position.x + (this.hallScale * this.seatWidth * elem.seat.type.countSeat)
+      }
 
       const bottomBorder = position.y + ((this.hallScale) * this.seatWidth)
       const topBorder = position.y - (this.hallScale * this.seatWidth)
@@ -333,13 +341,14 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           targetY += afterY
         }
 
+       
         //if (this.checkSeatAround(index)) return 
-
-        selected.hidden = true
+        //selected.hidden = true
+        selected.style.visibility = "hidden"
         //смотрим элемент под сиденем (перетаскиваемый объект)
         let elemBelow = document.elementFromPoint(targetX + this.shiftContainerX, targetY + this.shiftContainerY)
-        selected.hidden = false
-
+        //selected.hidden = false
+        selected.style.visibility = ""
         if (!elemBelow) return
 
         let droppableBelow = elemBelow.closest('.dropable')
@@ -352,7 +361,6 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
             localError = true
           }
         }
-
         if (droppable != droppableBelow) {
 
           if (droppable) {
@@ -376,13 +384,10 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private addSelectedSeat(index: number) {
-    
-  }
-
   //инициализирует перемещение
   mouseDown(event: MouseEvent, index: number) {
     //console.log("mouse down")
+    //console.log(this.data[index].elem)
     const leftButton = 0
     if (event.button === leftButton) {
     
@@ -392,6 +397,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       }
 
       const seat =  this.data[index].elem!
+
+      //seat.style.visibility = 'hidden'
 
       const init: Position = {
         x: this.data[index].position.x,
@@ -410,6 +417,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       this.shiftCursorY = event.clientY - seat.getBoundingClientRect().top
     }
   }
+
 
   mouseUp(event: MouseEvent, index: number) {
     //console.log("mouse up")
@@ -547,14 +555,20 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     }*/
     const innerSize = Math.round(this.scale * 0.8)
     const innerWidth = innerSize * this.seatWidth
-
-    this.style.hall = {
-      width: `${(this.hallWidth + 1) * this.hallScale}px`,
-      height: `${(this.hallHeight + 1) * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
-    }
-    this.style.innerElem = {
-      width: `${innerWidth}px`,
-      height: `${innerWidth}px`
+    this.style = {
+      hall: {
+        width: `${(this.hallWidth + 1) * this.hallScale}px`,
+        height: `${(this.hallHeight + 1) * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
+      },
+      innerElem: {
+        width: `${innerWidth}px`,
+        height: `${innerWidth}px`
+      },
+      showButton: {
+        height: `${this.hallScale + Math.round(this.hallScale * 0.2)}px`
+      },
+      showButtonInner: this.generateShowButtonInnerStyle()
+  
     }
     /*this.styleInnerElem = {
       width: `${innerWidth}px`,
@@ -571,6 +585,16 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private generateShowButtonInnerStyle(): Height[] {
+    const style: Height[] = []
+
+    for (let i = 0; i < this.hallHeight; i++) {
+      style.push({height: `${this.hallScale}px`})
+    }
+
+    return style
+  }
+
   updateState() {
     this.scale = this.hallScale
     this.setWidthCount()
@@ -583,18 +607,20 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   
   private setHeightCount() {
     console.log("height")
-    this.hallHeightCount = []
+    const hallHeightCount: number[] = []
     for (let i = 0; i < this.hallHeight; i++) {
-      this.hallHeightCount.push(i)
+      hallHeightCount.push(i)
     }
+    this.hallHeightCount = hallHeightCount
   }
 
   private setWidthCount() {
     console.log("width")
-    this.hallWidthCount = []
+    const hallWidthCount: number[] = []
     for (let i = 0; i < this.hallWidth; i++) {
-      this.hallWidthCount.push(i)
+      hallWidthCount.push(i)
     }
+    this.hallWidthCount = hallWidthCount
   }
 
   /*generateSeats() {
@@ -663,19 +689,22 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     const coordinate = index + 1
     this.seats = this.seats.filter(seat => seat.y !== coordinate)
   }*/
-  generateDataRow(index: number, row: number): Data[] {
+  generateDataRow(index: number, row: number, countSeat?:number): Data[] {
     const coordinateY = index + 1
     const dataRow: Data[] = []
 
     const innerSize = Math.round(this.scale * 0.8)
     const innerWidth = innerSize * this.seatWidth
 
-    for (let i = 0; i < this.hallWidth; i += this.seatWidth) {
+    const del = countSeat ? this.seatWidth * countSeat : this.seatWidth
+    for (let i = 0, seatNumber = 1 ; i < this.hallWidth; i += del, seatNumber++) {
       dataRow.push({ 
         seat: {
           x: i + 1,
           y: coordinateY,
-          row: row
+          row: row,
+          number: seatNumber,
+          type: countSeat ? new Sofa(countSeat) : new Single()
         },
         position: {
           x: i * this.scale,
@@ -702,6 +731,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     })
     return dataRow
   }
+  
   
   deleteRow(index: number):void {
     const coordinate = index + 1
@@ -740,18 +770,30 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       if (!haveRow) {
         console.log("add row")
         const rowUnderGeterated = this.data.filter(({ seat }) => seat.y > coordinate)
-
-        let minRow = rowUnderGeterated[0].seat.row
-        rowUnderGeterated.forEach(({ seat }) => {
-          if (seat.row < minRow) {
-            minRow = seat.row
+        //console.log(rowUnderGeterated)
+        let newRow = 0
+        if(rowUnderGeterated.length > 0) {
+          let minRow = rowUnderGeterated[0].seat.row
+          rowUnderGeterated.forEach(({ seat }) => {
+            if (seat.row < minRow) {
+              minRow = seat.row
+            }
+            seat.row = seat.row  + 1
+          })
+          newRow = minRow
+        } else {
+          if (this.selectRowButton.length === 0) {
+            newRow = 1
+          } else {
+            const sorted = this.selectRowButton.sort((a, b)=> b.row -  a.row)
+            //console.log(sorted)
+            newRow = sorted[0].row + 1
           }
-          seat.row = seat.row  + 1
-        })
+        }
         
         //проверить эффективность
         this.generateSelectRowButtons()
-        this.data.push(...this.generateDataRow(index, minRow))
+        this.data.push(...this.generateDataRow(index, newRow))
 
         
         //this.seats = this.seats.concat(this.generateRowSeats(1, this.hallWidth, coordinate))
@@ -800,4 +842,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       }
     }
   }*/
+
+  showButtons(ref: HTMLDivElement) {
+    ref.classList.toggle("admin-hall-buttons-show-show")
+  } 
 }

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
@@ -18,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DragDropModule } from 'primeng/dragdrop';
+import { SpeedDialModule } from 'primeng/speeddial'
 
 @NgModule({
   declarations: [
@@ -38,9 +39,11 @@ import { DragDropModule } from 'primeng/dragdrop';
     InputTextModule,
     DropdownModule,
     CheckboxModule,
-    DragDropModule
+    DragDropModule,
+    SpeedDialModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule { }
