@@ -5,7 +5,6 @@ import { Seat, Single, Sofa, SeatType} from '../seat/seat-model'
 import { EditSeatComponent } from './edit-seat/edit-seat.component';
 
 import { DialogService } from 'primeng/dynamicdialog';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 type Position = {
   x: number,
@@ -122,6 +121,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   //elemAction!: MenuItem[]
   
+  private contextMenuRef: HTMLElement | null = null
 
   constructor(public dialogService: DialogService) { 
     //this.generateSeats()
@@ -148,36 +148,6 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         })
       }
     }
-  }
-
-
-
-  show(seat: Seat) {
-    const ref = this.dialogService.open(EditSeatComponent, {
-      data: {
-        seat
-      },
-      header: 'Edit seat',
-      width: '70%',
-    })
-
-    /*ref.onClose.subscribe((data: any) => {
-      if (data.isDelete) {
-        const index = this.seats.indexOf(seat)
-        this.seats.splice(index, 1)
-      } else {
-        console.log(data)
-        const newSeat = {
-          x: data.x,
-          y: data.y,
-          category: data.category
-        }
-        const index = this.seats.indexOf(seat)
-        this.seats.splice(index, 1)
-        this.seats = this.seats.concat(newSeat)
-        //this.updateState()
-      }
-    })*/
   }
 
   ngOnInit(): void {
@@ -455,12 +425,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   //инициализирует перемещение
   mouseDown(event: MouseEvent, index: number) {
-    //console.log("mouse down")
-    //console.log(this.data[index].elem)
-    /*const innerSize = Math.round(this.scale * 0.8)
-    const innerWidth = innerSize * this.seatWidth
-    console.log(`${this.shiftCursorX} ${innerWidth} ${this.shiftCursorX / innerWidth}`)*/
     const leftButton = 0
+
     if (event.button === leftButton) {
     
        //если не нажата клавиша ctrl, то можем перемещать выбранные элементы
@@ -498,8 +464,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       this.shiftCursorX = Math.floor(event.clientX) - Math.floor(seat.getBoundingClientRect().left)
       this.shiftCursorY = Math.floor(event.clientY) - Math.floor(seat.getBoundingClientRect().top)
     }
-  }
 
+  }
 
   mouseUp(event: MouseEvent, index: number) {
     //console.log("mouse up")
@@ -550,11 +516,24 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
                 this.data[i].seat.x = coordinate.x
                 this.data[i].seat.y = coordinate.y
               }
-              
+
+              if (this.isSelectedRow) {
+                const [selected, target, i, initPoint] = this.selectedSeats[0]
+                //перемещаем кнопку выбора ряда
+                const selectedRowIndex = this.selectRowButton
+                  .findIndex(elem => elem.row === this.data[i].seat.row)
+                this.selectRowButton[selectedRowIndex] = {
+                  ...this.selectRowButton[selectedRowIndex],
+                  style: {
+                    top: `${this.data[i].position.y}px`,
+                    left: `${-190}px`
+                  }
+                }
+              }
           }
         })
-
-        if (!this.movableError && this.isSelectedRow) {
+        this.checkSeatAfterMove()
+        /*if (!this.movableError && this.isSelectedRow) {
           const [selected, target, i, initPoint] = this.selectedSeats[0]
           //перемещаем кнопку выбора ряда
           const selectedRowIndex = this.selectRowButton
@@ -566,14 +545,120 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
               left: `${-190}px`
             }
           }
-        }
+        }*/
         this.selectedSeats = []
       }
       this.movableSeat = null
       this.isSelectedRow = false
     }
+  }
+
+
+  private checkSeatAfterMove() {
+    if (this.selectedSeats.length === 1) {
+      const [elem, droppable, index, position] = this.selectedSeats[0]
+      const currSeat = this.data[index].seat
+
+      const leftSeats: Data[] = []
+      const rightSeats: Data[] = []
+
+      this.data.forEach(elem => {
+        if (elem.seat.row === currSeat.row) {
+          if (elem.seat.x < currSeat.x) {
+            leftSeats.push(elem)
+          }
+          if (elem.seat.x > currSeat.x) {
+            rightSeats.push(elem)
+          } 
+        }
+      });
+
+      if (leftSeats.length > 0) {
+        let maxX = leftSeats[0].seat.x
+        let numberForMaxX = leftSeats[0].seat.number
+        for (let i = 1; i < leftSeats.length; i++) {
+          if (leftSeats[i].seat.x > maxX) {
+            maxX = leftSeats[i].seat.x
+            numberForMaxX = leftSeats[i].seat.number
+          }
+        }
+
+        if (numberForMaxX > currSeat.number) {
+          let newNumber = 1
+          leftSeats
+            .sort((a, b) => a.seat.x - b.seat.x)
+            .forEach(({ seat }) => {
+              seat.number = newNumber++
+            }) 
+            currSeat.number = newNumber
+        } else {
+          currSeat.number = numberForMaxX + 1
+        }
+        //currSeat.number = numberForMaxX
+      } else {
+        currSeat.number = 1
+      }
+
+      //currSeat.number++
     
-    
+      let numberForRightSeats = currSeat.number + 1
+      rightSeats
+        .sort((a, b) => a.seat.x - b.seat.x)
+        .forEach(({ seat }) => {
+          seat.number = numberForRightSeats++
+        })
+    } 
+
+    if (this.isSelectedRow) {
+      const rows = new Map<number, Seat[]>()
+
+      this.data.forEach(({ seat }) => {
+        const seatsGroup = rows.get(seat.row)
+        if (seatsGroup) {
+          seatsGroup.push(seat)
+          rows.set(seat.row, seatsGroup)
+        } else {
+          rows.set(seat.row, [seat])
+        }
+      })
+
+      const sortedRows = new Map<number, Seat[]>(
+        [...rows.entries()].sort((a, b) => {
+          const [rowA, seatsA] = a
+          const [rowB, seatsB] = b
+          return seatsA[0].y - seatsB[0].y
+        })
+      )
+
+      let newRow = 1
+      //let index = 0
+      this.selectRowButton = []
+      sortedRows.forEach((value) => {
+        //this.selectRowButton[index++].row = newRow
+        this.selectRowButton.push({
+          row: newRow,
+          style: {
+            top: `${(value[0].y - 1)* (this.scale + Math.round(this.scale * 0.2))}px`,
+            left: `${-190}px`
+          }
+        })
+        value.forEach(seat => {
+          seat.row = newRow
+        })
+        newRow++
+      })
+      /*const [selected, target, i, initPoint] = this.selectedSeats[0]
+      //перемещаем кнопку выбора ряда
+      const selectedRowIndex = this.selectRowButton
+        .findIndex(elem => elem.row === this.data[i].seat.row)
+      this.selectRowButton[selectedRowIndex] = {
+        ...this.selectRowButton[selectedRowIndex],
+        style: {
+          top: `${this.data[i].position.y}px`,
+          left: `${-190}px`
+        }
+      }*/
+    }
   }
 
   private convertToCoordinate(left: string, top: string): Position {
@@ -615,29 +700,6 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         ])
       }
     })
-    //console.log("select row")
-
-    /*this.isSelectedRow = true
-
-    this.data[0].elem!.style.zIndex = "15"
-    this.data[1].elem!.style.zIndex = "15"
-    this.selectedSeats = [[
-      this.data[0].elem!,
-      null,
-      0,
-      {
-        x: this.data[0].coordinate.x,
-        y:  this.data[0].coordinate.y,
-      }
-    ], [
-      this.data[1].elem!,
-      null,
-      1,
-      {
-        x: this.data[1].coordinate.x,
-        y:  this.data[1].coordinate.y,
-      }
-    ]]*/
   }
 
   setElem(elem: HTMLElement | null, index: number) {
@@ -648,10 +710,6 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   private setStyle() {
     //высота на 20% больше ширины
-    /*this.styleHall = {
-      width: `${(this.hallWidth + 1) * this.hallScale}px`,
-      height: `${(this.hallHeight + 1) * (this.hallScale + Math.round(this.hallScale * 0.2))}px`
-    }*/
     const innerSize = Math.round(this.scale * 0.8)
     const innerWidth = innerSize * this.seatWidth
     this.style = {
@@ -669,16 +727,6 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       showButtonInner: this.generateShowButtonInnerStyle()
   
     }
-    /*this.styleInnerElem = {
-      width: `${innerWidth}px`,
-      height: `${innerWidth}px`
-    }*/
-
-    /*this.style.buttonContainer =  {
-      width: `${this.hallScale}px`,
-      height: `${this.hallScale * 2}px`
-    }*/
-
     this.buttonVerticalHeight = {
       height: `${(this.hallScale + Math.round(this.hallScale * 0.2))}px`
     }
@@ -723,72 +771,6 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     this.hallWidthCount = hallWidthCount
   }
 
-  /*generateSeats() {
-    const seats: Seat[] = []
-    //i это координата
-    for (let i = 1; i <= this.hallHeight - this.seatWidth + 1; i += this.seatWidth) {
-      seats.push(...this.generateRowSeats(1, this.hallWidth, i))
-    }
-    this.seats = seats
-  }*/
-
-  /*private generateRowSeats(xFrom: number, xTo: number, y: number): Seat[] {
-    const seats: Seat[] = []
-    for (let i = xFrom; i <= xTo - this.seatWidth + 1; i += this.seatWidth) {
-      seats.push({
-        x: i,
-        y,
-        price: 150,
-        //category: SeatCategory.FREE
-      })
-    }
-    return seats
-  }*/
-
-  /*private generateColumnSeats(yFrom: number, yTo: number, x: number): Seat[] {
-    const seats: Seat[] = []
-    for (let i = yFrom; i <= yTo; i += this.seatWidth) {
-      seats.push({
-        x,
-        y: i,
-        price: 150,
-        //category: SeatCategory.FREE
-      })
-    }
-    return seats
-  }*/
-
-  /*click(seat: Seat, event: any, seatRef: any): void {
-    console.log("click")
-    if (event.ctrlKey) {
-      
-      const indexSeat = this.selectedSeats.indexOf(seat)
-      if (indexSeat === -1) {
-        this.selectedSeats.push(seat)
-        this.selectedSeatsRef.push(seatRef)
-      } else {
-        this.selectedSeats.splice(indexSeat, 1)
-        this.selectedSeatsRef.splice(indexSeat, 1)
-      }
-    }
-    
-  }*/
-
-  /*deleteSelected() {
-    //console.log(this.selectedSeats)
-    this.selectedSeats.forEach(selected => {
-      const index = this.seats.indexOf(selected)
-      this.seats.splice(index, 1)
-    })
-    this.selectedSeats = []
-  }*/
-
-
-
-  /*deleteRow(index: number): void {
-    const coordinate = index + 1
-    this.seats = this.seats.filter(seat => seat.y !== coordinate)
-  }*/
   generateDataRow(index: number, row: number, countSeat?:number): Data[] {
     const coordinateY = index + 1
     const dataRow: Data[] = []
@@ -836,7 +818,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   }
   
   
-  deleteRow(index: number):void {
+  deleteRow(index: number): void {
     const coordinate = index + 1
 
     const currentRow = this.data.find(({ seat }) => seat.y === coordinate)
@@ -905,54 +887,72 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /*addRow(index: number): void {
-    const coordinate = index + 1
-    console.log(`add row: ${index + this.seatWidth} ${this.hallHeight} `)
-    if (index <= this.hallHeight) {
-      const haveRow = this.seats.find(
-        //проверяем есть ли рядом другие места
-        seat => seat.y < coordinate + this.seatWidth && seat.y > coordinate - this.seatWidth
-      )
-  
-      if (!haveRow) {
-        console.log("add row")
-        this.seats = this.seats.concat(this.generateRowSeats(1, this.hallWidth, coordinate))
-      } else {
-        console.log("no add row")
-      }
-    }
-   
-  }*/
-
-  /*deleteColumn(index: number): void {
-    const coordinate = index + 1
-    this.data = this.data.filter(({ seat }) => seat.x !== coordinate)
-  }
-
-  addColumn(index: number): void {
-    const coordinate = index + 1
-    if (index <= this.hallWidth) {
-      //проверяем есть ли рядом другие места
-      const haveRow = this.data.find(
-       ({ seat }) => seat.x < coordinate + this.seatWidth && seat.x > coordinate - this.seatWidth
-      )
-
-      if (!haveRow) {
-        console.log("add row")
-        this.data.push(...this.generateDataRow(index))
-      } else {
-        console.log("no add row")
-      }
-    }
-  }*/
-
   showButtons(ref: HTMLDivElement) {
     ref.classList.toggle("admin-hall-buttons-show-show")
   } 
+
+  contextMenu(event: MouseEvent, contextMenu: HTMLElement) {
+    event.preventDefault()
+
+    const rightButton = 2
+
+    const shiftCursorX = Math.floor(event.clientX) - this.shiftContainerX
+    const shiftCursorY = Math.floor(event.clientY) - this.shiftContainerY
+
+    if (event.button === rightButton) {
+      this.closeContextMenu()
+      contextMenu.classList.add("admin-hall-context-menu-show")
+      contextMenu.style.left = `${shiftCursorX}px`
+      contextMenu.style.top = `${shiftCursorY}px`
+      this.contextMenuRef = contextMenu
+    }
+  }
+
+  deleteSeat(index: number) {
+    this.closeContextMenu()
+
+    const removeSeat = this.data[index].seat
+    this.data.splice(index, 1)
+
+    this.data.forEach(({ seat }) => {
+      if (seat.row === removeSeat.row) {
+        if (seat.number > removeSeat.number) {
+          seat.number--
+        }
+      }
+    })
+    
+  }
+  
+  /*editSeat(index: number) {
+    const seat = this.data[index].seat
+
+    const ref = this.dialogService.open(EditSeatComponent, {
+      data: {
+        seat,
+        
+      },
+      header: 'Edit seat',
+      width: '70%',
+    })
+
+    ref.onClose.subscribe((data: any) => {
+      console.log(data)
+    })
+  }*/
 
   @HostListener('window:resize')
   resize() {
     this.shiftContainerX = Math.floor(this.adminHall.nativeElement.offsetLeft)
     this.shiftContainerY = Math.floor(this.adminHall.nativeElement.offsetTop)
+  }
+
+  @HostListener('body:click') 
+  closeContextMenu() {
+    if(this.contextMenuRef !== null) {
+      this.contextMenuRef.classList.remove("admin-hall-context-menu-show")
+      this.contextMenuRef = null
+    }
+
   }
 }

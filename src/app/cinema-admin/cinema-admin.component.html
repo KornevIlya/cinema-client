@@ -53,18 +53,28 @@
                 <p-button icon="pi pi-times" (onClick)="deleteColumn(i)"></p-button>
             </div>
         </div>-->
-        
-        <app-seat *ngFor="let elem of data; let i = index;"
-            [seat]="elem.seat" 
-            [scale]="scale" 
-            [width]="seatWidth"
-            [isSelected]="elem.isSelected"
-            (mousedown)="mouseDown($event, i)"
-            (mouseup)="mouseUp($event, i)"
-            draggable="true"
-            (dragstart)="dragStart()"
-            (setElem)="setElem($event, i)"
-        ></app-seat>
+        <div *ngFor="let elem of data; let i = index;" 
+            (contextmenu)="contextMenu($event, contextMenuRef)"
+        >
+            <app-seat 
+                [seat]="elem.seat" 
+                [scale]="scale" 
+                [width]="seatWidth"
+                [isSelected]="elem.isSelected"
+                (mousedown)="mouseDown($event, i)"
+                (mouseup)="mouseUp($event, i)"
+                draggable="true"
+                (dragstart)="dragStart()"
+                (setElem)="setElem($event, i)"
+            ></app-seat>
+            <ul class="admin-hall-context-menu" 
+                #contextMenuRef
+            >
+                <!-- <li class="admin-hall-context-menu-item" (click)="editSeat(i)">Редактировать</li> -->
+                <li class="admin-hall-context-menu-item" (click)="deleteSeat(i)">Удалить</li>
+            </ul>
+        </div>
+
     </div>
 
     <div>

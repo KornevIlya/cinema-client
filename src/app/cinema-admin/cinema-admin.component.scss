@@ -67,6 +67,34 @@
                 
             }
         }
+
+        &-context {
+            &-menu {
+                position: absolute;
+                z-index: 20;
+
+                display: none;
+                width: 160px;
+
+                list-style: none;
+                padding-left: 0px;
+
+                background-color: lightseagreen;
+                &-show {
+                    display: block;
+                }
+
+                &-item {
+                    font-size: 22px;
+
+                    padding-left: 10px;
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+
+                    cursor: pointer;
+                }
+            }
+        }
     }
 
     &-form {
