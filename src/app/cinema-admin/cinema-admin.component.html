@@ -42,8 +42,16 @@
             <div *ngFor="let e of allElements; let i = index"
                 class="elem dropable"
                 [style]="e"
+                #elemRef
+                (contextmenu)="contextMenuForHall($event, contextMenuRef)"
             >
                 <div class="elem-inner" [style]="style.innerElem"></div>
+                <ul class="admin-hall-context-menu" 
+                    #contextMenuRef
+                >
+                    <!-- <li class="admin-hall-context-menu-item" (click)="editSeat(i)">Редактировать</li> -->
+                    <li class="admin-hall-context-menu-item" (click)="addRows(elemRef)">Добавить</li>
+                </ul>
             </div>
         </div>
         
@@ -54,7 +62,7 @@
             </div>
         </div>-->
         <div *ngFor="let elem of data; let i = index;" 
-            (contextmenu)="contextMenu($event, contextMenuRef)"
+            (contextmenu)="contextMenuForSeat($event, contextMenuRef)"
         >
             <app-seat 
                 [seat]="elem.seat" 

@@ -1,0 +1,23 @@
+<div class="add-seat">
+    <div class="add-seat-group"> 
+        <label>Доваыыить</label>
+        <p-selectButton [options]="options" [(ngModel)]="selectOption" ></p-selectButton>
+     </div>
+    <div class="add-seat-group"> 
+       <label>Ряд</label>
+       <p-inputNumber [(ngModel)]="row" [min]="1" [max]="maxRow"></p-inputNumber>
+    </div>
+    <div class="add-seat-group">
+        <label>Количество мест</label>
+        <p-inputNumber 
+            [ngClass]="classStyle"
+            [(ngModel)]="count" 
+            [min]="0" 
+            [max]="maxCount" 
+            (onFocus)="onFocus()"
+        ></p-inputNumber>
+    </div>
+    <div >
+        <p-button (onClick)="createSeat()">Добавить</p-button>
+    </div>
+</div>

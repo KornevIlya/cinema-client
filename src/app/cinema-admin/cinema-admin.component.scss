@@ -2,8 +2,8 @@
 .elem {
     position: absolute;
     background-color: aqua; 
-    overflow: hidden;
-    z-index: 1;
+    //overflow: hidden;
+    //z-index: 1;
 }
 
 .admin {
@@ -40,7 +40,7 @@
                 //width: 50px;
                 &-show {
                     left: -170px;
-                    z-index: 15;
+                    //z-index: 15;
                 }
                 display: flex;
                 &-inner{

@@ -3,8 +3,11 @@ import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, HostListener }
 import { HallStyle } from './cinema-admin-models'
 import { Seat, Single, Sofa, SeatType} from '../seat/seat-model'
 import { EditSeatComponent } from './edit-seat/edit-seat.component';
+import { AddSeatComponent } from './add-seat/add-seat.component';
+import { Side } from './add-seat/add-seat-model';
 
 import { DialogService } from 'primeng/dynamicdialog';
+
 
 type Position = {
   x: number,
@@ -121,7 +124,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   //elemAction!: MenuItem[]
   
-  private contextMenuRef: HTMLElement | null = null
+  private contextMenuForSeatRef: HTMLElement | null = null
+  private contextMenuForHallRef: HTMLElement | null = null
 
   constructor(public dialogService: DialogService) { 
     //this.generateSeats()
@@ -325,7 +329,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           /**if (droppableArray)
            droppable.style.zIndex = ""*/
           if (!elemBelow) return
-
+          //console.log(elemBelow)
           let droppableBelow = elemBelow.closest('.dropable')
           
           if (droppableBelow === null) {
@@ -430,8 +434,11 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     if (event.button === leftButton) {
     
        //если не нажата клавиша ctrl, то можем перемещать выбранные элементы
-      if (!event.ctrlKey) {
+      if (!event.ctrlKey && !event.shiftKey) {
         this.isMovable = true
+      }
+      if (event.shiftKey) {
+        this.selectRow(this.data[index].seat.row)
       }
 
       const seat =  this.data[index].elem!
@@ -474,7 +481,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     if (event.button === leftButton) {
       this.isMovable = false
       
-      if (!event.ctrlKey) {
+      if (!event.ctrlKey && !event.shiftKey) {
         //this.data[index].isSelected = false
         this.selectedSeats.forEach(([selected, target, i, initPoint]) => {
   
@@ -529,6 +536,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
                     left: `${-190}px`
                   }
                 }
+
+                this.isSelectedRow = false
               }
           }
         })
@@ -549,7 +558,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         this.selectedSeats = []
       }
       this.movableSeat = null
-      this.isSelectedRow = false
+      //this.isSelectedRow = false
     }
   }
 
@@ -891,7 +900,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     ref.classList.toggle("admin-hall-buttons-show-show")
   } 
 
-  contextMenu(event: MouseEvent, contextMenu: HTMLElement) {
+  contextMenuForSeat(event: MouseEvent, contextMenu: HTMLElement) {
     event.preventDefault()
 
     const rightButton = 2
@@ -904,7 +913,24 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       contextMenu.classList.add("admin-hall-context-menu-show")
       contextMenu.style.left = `${shiftCursorX}px`
       contextMenu.style.top = `${shiftCursorY}px`
-      this.contextMenuRef = contextMenu
+      this.contextMenuForSeatRef = contextMenu
+    }
+  }
+
+  contextMenuForHall(event: MouseEvent, contextMenu: HTMLElement) {
+    event.preventDefault()
+
+    const rightButton = 2
+
+    const shiftCursorX = Math.floor(event.offsetX) //- this.shiftContainerX
+    const shiftCursorY = Math.floor(event.offsetY) //- this.shiftContainerY
+
+    if (event.button === rightButton) {
+      this.closeContextMenu()
+      contextMenu.classList.add("admin-hall-context-menu-show")
+      contextMenu.style.left = `${shiftCursorX}px`
+      contextMenu.style.top = `${shiftCursorY}px`
+      this.contextMenuForHallRef = contextMenu
     }
   }
 
@@ -923,7 +949,107 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     })
     
   }
-  
+
+  private canAdd(x: number, y: number) {
+   
+    //console.log(x, y)
+    return (row: number, count: number, side: Side): boolean => {
+      //console.log(side)
+      if (side === Side.RIGHT) {
+        const rightBorder = x + (count * this.seatWidth) - 1
+        if (rightBorder >= this.hallWidth + this.seatWidth) return false
+
+        const rangeFromX = x - this.seatWidth
+        const rangeToX = x + (count * this.seatWidth)
+        const findX = this.data.find(({ seat }) => seat.y === y && seat.x > rangeFromX && seat.x < rangeToX)
+        if (findX) return false
+      }
+
+      if (side === Side.LEFT) {
+        const leftBorder = x - (count * this.seatWidth)
+        if (leftBorder < 1) return false
+
+        const findX = this.data.find(({ seat }) => seat.y === y && seat.x >= leftBorder && seat.x <= x)
+
+        if (findX) return false
+      }
+      return true
+    }
+  }
+
+  private generateRowFromTo(xFrom: number, xTo: number, y: number, row: number) {
+    //console.log(xFrom + " " + xTo)
+    if (xTo <= this.hallWidth) {
+      for (let i = xFrom; i < xTo; i += this.seatWidth) {
+        this.data.push({ 
+          seat: {
+            x: i,
+            y: y,
+            row,
+            number: 5,
+            type: new Single()//countSeat ? new Sofa(countSeat) : new Single()
+          },
+          position: {
+            x: (i - 1) * this.scale,
+            y: (y - 1) * (this.hallScale + Math.round(this.hallScale * 0.2))
+          },
+          size: {
+            width: `${this.hallScale * this.seatWidth}px`,
+            height: `${(this.hallScale + Math.round(this.hallScale * 0.2)) * this.seatWidth}px`
+          },
+          innerSize: {
+            width: `${innerWidth}px`,
+            height: `${innerWidth}px`
+          },
+          elem: null,
+          isSelected: false
+        })
+      }
+    }
+  }
+
+  private adjustmentSeatNumber(row: number) {
+    let newNumber: number = 1
+    this.data
+      .filter(({seat}) => seat.row === row)
+      .sort((a, b) => a.seat.x - b.seat.x)
+      .forEach(({ seat }) => seat.number = newNumber++)
+  }
+
+  addRows(currElem: HTMLElement) {
+    const maxCount = Math.floor(this.hallWidth / this.seatWidth)
+    const maxRow = this.hallHeight
+
+    const coordinate: Position = this.convertToCoordinate(currElem.style.left, currElem.style.top)
+    //console.log(elem)
+    const x = coordinate.x /// this.scale
+    const y = coordinate.y /// this.scale
+
+    const ref = this.dialogService.open(AddSeatComponent, {
+      data: {
+        canAdd: this.canAdd(x, y),
+        maxCount,
+        maxRow
+      },
+      header: 'Добавить места',
+      width: '70%',
+    })
+
+    ref.onClose.subscribe((data: any) => {
+      //console.log(data)
+      if (data.side === Side.RIGHT) {
+        const xTo = x + (data.count * this.seatWidth) - 1
+        this.generateRowFromTo(x, xTo, y, data.row)
+      }
+      if (data.side === Side.LEFT) {
+        console.log(coordinate, x, y)
+        const xFrom = x - (data.count * this.seatWidth) + 1
+        console.log("fromto", xFrom, x)
+        this.generateRowFromTo(xFrom, x, y, data.row)
+      }
+      this.adjustmentSeatNumber(data.row)
+    })
+  }
   /*editSeat(index: number) {
     const seat = this.data[index].seat
 
@@ -941,6 +1067,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     })
   }*/
 
+  
+
   @HostListener('window:resize')
   resize() {
     this.shiftContainerX = Math.floor(this.adminHall.nativeElement.offsetLeft)
@@ -949,10 +1077,21 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   @HostListener('body:click') 
   closeContextMenu() {
-    if(this.contextMenuRef !== null) {
-      this.contextMenuRef.classList.remove("admin-hall-context-menu-show")
-      this.contextMenuRef = null
+    if(this.contextMenuForSeatRef !== null) {
+      this.contextMenuForSeatRef.classList.remove("admin-hall-context-menu-show")
+      this.contextMenuForSeatRef = null
     }
-
+    if(this.contextMenuForHallRef !== null) {
+      this.contextMenuForHallRef.classList.remove("admin-hall-context-menu-show")
+      this.contextMenuForHallRef = null
+    }
   }
+
+  /*@HostListener('body:click')
+  closeContextMenuForHall() {
+    if(this.contextMenuForHallRef !== null) {
+      this.contextMenuForHallRef.classList.remove("admin-hall-context-menu-show")
+      this.contextMenuForHallRef = null
+    }
+  }*/
 }

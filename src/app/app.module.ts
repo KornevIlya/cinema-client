@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { SeatComponent } from './seat/seat.component';
 import { CinemaAdminComponent } from './cinema-admin/cinema-admin.component';
 import { EditSeatComponent } from './cinema-admin/edit-seat/edit-seat.component';
+import { AddSeatComponent } from './cinema-admin/add-seat/add-seat.component'
 
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -18,14 +19,16 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DragDropModule } from 'primeng/dragdrop';
-import { SpeedDialModule } from 'primeng/speeddial'
+import { SpeedDialModule } from 'primeng/speeddial';
+import { SelectButtonModule } from 'primeng/selectbutton'
 
 @NgModule({
   declarations: [
     AppComponent,
     SeatComponent,
     CinemaAdminComponent,
-    EditSeatComponent
+    EditSeatComponent,
+    AddSeatComponent
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import { SpeedDialModule } from 'primeng/speeddial'
     DropdownModule,
     CheckboxModule,
     DragDropModule,
-    SpeedDialModule
+    SpeedDialModule,
+    SelectButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent],

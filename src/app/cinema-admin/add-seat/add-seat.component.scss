@@ -1,0 +1,12 @@
+.add {
+    &-seat {
+        display: flex;
+        flex-direction: column;
+        height: 400px;
+
+        &-group {
+            display: flex;
+            flex-direction: column;
+        }   
+    }
+}
