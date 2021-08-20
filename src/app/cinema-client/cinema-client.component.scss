@@ -1,0 +1,118 @@
+.title {
+    line-height: 10%
+}
+.container {
+    position: relative;
+    margin: 0 auto;
+}
+
+.container-elem {
+    position: absolute;
+    cursor: pointer;
+} 
+
+.badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: small;
+    color: white;
+    background-color:#9db9d1;
+    height: 80%;
+    width: 80%;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.badge.closed{
+    background-color:#000000;
+}
+.bronned {
+    background-color:#42aaff;
+}
+
+.info {
+    position: fixed;
+    bottom: 240px;
+    right: 100px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.suman {
+  position: fixed;
+  right: 100px;
+  bottom: 440px;
+  text-align: center;
+}
+
+.button5 {
+  font-weight: 700;
+  background-color: white;
+  color: black;
+  text-decoration: none;
+  padding: .8em 3em calc(.8em + 3px);
+
+  border: 2px solid #008CBA;
+  border-radius: 12px;
+  transition: 0.2s;
+} 
+
+.button5:hover { 
+    background-color: #008CBA;
+    color: white;
+}
+
+.button5:active {
+  background: rgb(33,147,90);
+  box-shadow: 0 3px rgb(33,147,90) inset;
+}
+
+.eins-wrapper {
+    position: fixed;
+    left: 50px;
+    bottom: 340px;
+}
+.eins {
+    width: 20px;
+    height: 20px;  
+    padding: 5px;
+    //float: left; 
+    border: solid 1px black;  
+    //left: -990px;
+}
+
+.eins.one{
+   // position: relative;
+    background: #9db9d1; 
+    top: 118px;
+}
+  
+.eins.two{
+    //position: relative;
+    background:#5887b0;  
+   // top: 130px;
+}
+  
+.eins.three{
+    //position: relative;
+    background: #42aaff;  
+    //top: 142px;
+}
+  
+.eins.four{
+   // position: relative;
+    background: #000000; 
+   // top: 154px;
+}
+.eins-group {
+    display: flex;
+    align-items: center;
+    height: 2.1em;
+}
+.colinfo {	
+    padding-left: 10px;
+    text-align: left;
+}
+  
+  

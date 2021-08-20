@@ -4,11 +4,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SeatComponent } from './seat/seat.component';
+import { CinemaClientComponent } from './cinema-client/cinema-client.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SeatComponent
+    SeatComponent,
+    CinemaClientComponent
   ],
   imports: [
     BrowserModule,
