@@ -12,7 +12,7 @@
        // height: 800px;
         margin: 0 auto;
         padding-top: 50px;
-       
+        
     }
 
     &-hall {
@@ -21,6 +21,12 @@
         position: relative;
         margin: 0 auto;
        
+        &-select-area {
+            position: absolute;
+            background-color: rgba($color: darkblue, $alpha: .3);
+            z-index: 50;
+        }
+
         &-buttons {
             &-vertical {
                 position: relative;

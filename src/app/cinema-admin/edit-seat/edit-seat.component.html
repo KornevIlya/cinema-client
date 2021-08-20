@@ -1,19 +1,7 @@
 <div class="edit-seat">
-    <div class="edit-seat-group"> 
-        <label>Координата x</label>
-        <p-inputNumber [(ngModel)]="x"></p-inputNumber>
-    </div>
-    <div class="edit-seat-group">
-        <label>Координата y</label>
-        <p-inputNumber [(ngModel)]="y"></p-inputNumber>
-    </div>
     <div class="edit-seat-group">
         <label>Ряд</label>
-        <p-inputNumber [(ngModel)]="row"></p-inputNumber>
-    </div>
-    <div class="edit-seat-group">
-        <label>Номер</label>
-        <p-inputNumber [(ngModel)]="number"></p-inputNumber>
+        <p-inputNumber [(ngModel)]="row" [min]="1" [max]="rowMax"></p-inputNumber>
     </div>
     <div>
         <p-button (onClick)="ok()">Ок</p-button>

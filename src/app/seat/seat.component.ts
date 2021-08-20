@@ -38,7 +38,7 @@ export class SeatComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngOnChanges() {
-    console.log("onchange")
+    //console.log("onchange")
     this.updateStyle()
   }
 

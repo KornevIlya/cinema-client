@@ -12,18 +12,19 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 
 export class EditSeatComponent implements OnInit, OnDestroy {
 
-  x: number
-  y: number
+  //x: number
+  //y: number
   row: number
-  number: number
-
+  //number: number
+  rowMax: number
 
   constructor(private ref: DynamicDialogRef, private config: DynamicDialogConfig) { 
 
-    this.x = this.config.data.seat.x
-    this.y = this.config.data.seat.y
-    this.row = this.config.data.seat.row
-    this.number = this.config.data.seat.number
+    //this.x = this.config.data.seat.x
+    //this.y = this.config.data.seat.y
+    this.row = this.config.data.row
+    this.rowMax = this.config.data.rowMax
+    //this.number = this.config.data.seat.number
 
   }
 
@@ -36,10 +37,10 @@ export class EditSeatComponent implements OnInit, OnDestroy {
 
   ok() {
     this.ref.close({
-      x: this.x,
-      y: this.y,
+      //x: this.x,
+      //y: this.y,
       row: this.row,
-      number: this.number
+      //number: this.number
     })
   }
   close() {

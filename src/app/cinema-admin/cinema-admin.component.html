@@ -1,7 +1,13 @@
 
 <div class="admin-container" (mousemove)="mouseMove($event)">
-    <div class="admin-hall" #adminHall >
     
+    <div class="admin-hall" #adminHall
+        (mousedown)="startSelectArea($event)"
+        (mouseup)="endSelectArea($event)"
+    >
+
+        <div class="admin-hall-select-area" [style]="selectAreaStyle"></div>
+
         <div [style]="style.hall">
 
             <div class="admin-hall-buttons-vertical">
@@ -39,9 +45,9 @@
                 </p-button>
             </div>
             
-            <div *ngFor="let e of allElements; let i = index"
+            <div *ngFor="let droppableStyle of droppableElements; let i = index"
                 class="elem dropable"
-                [style]="e"
+                [style]="droppableStyle"
                 #elemRef
                 (contextmenu)="contextMenuForHall($event, contextMenuRef)"
             >
@@ -78,7 +84,7 @@
             <ul class="admin-hall-context-menu" 
                 #contextMenuRef
             >
-                <!-- <li class="admin-hall-context-menu-item" (click)="editSeat(i)">Редактировать</li> -->
+                <li class="admin-hall-context-menu-item" (click)="editSeat(i)">Редактировать</li>
                 <li class="admin-hall-context-menu-item" (click)="deleteSeat(i)">Удалить</li>
             </ul>
         </div>
