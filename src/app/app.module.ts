@@ -21,6 +21,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DragDropModule } from 'primeng/dragdrop';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { SelectButtonModule } from 'primeng/selectbutton'
+import { CinemaClientComponent } from './cinema-client/cinema-client.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { SelectButtonModule } from 'primeng/selectbutton'
     CinemaAdminComponent,
     EditSeatComponent,
     AddSeatComponent
+    CinemaClientComponent
   ],
   imports: [
     BrowserModule,

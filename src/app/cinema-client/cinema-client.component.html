@@ -1,0 +1,54 @@
+<h1 align="center">Выбор места</h1>
+<h4 align="center" class="title">Экран</h4>
+<div class="container" [style]="containerStyle">
+    <div *ngFor="let place of places; let i = index"
+        class="container-elem"
+        
+        [style]="placesStyle[i]"
+        (click)="place.closet || onBrone(place)"
+        (mouseenter)="infos(place)"
+        (mouseleave)="infosOff(place)"
+    >
+    <div [class]="place.closet ? 'badge closed' : 'badge'"
+        [class.bronned]="place.brone"
+    >
+        {{place.seat}} 
+    </div>
+</div>
+<div class="suman">
+    <p>Сумма: {{count}} рублей</p>
+    <a href="https://github.com/KornevIlya/cinema-client" target="_blank" class="button5">Забронировать</a>
+</div>
+<div class="info">
+    <div *ngIf="check1">
+      <div *ngIf="bronnedPlace">
+        <h2>Информация</h2>
+         <div><span>Ряд: </span>{{bronnedPlace.row}}</div>
+        <div><span>Место: </span>{{bronnedPlace.seat}}</div>
+        <div *ngIf="bronnedPlace.cost > 0">	
+          <div><span>Стоимость: </span>{{bronnedPlace.cost}}</div>
+         </div>
+        <div *ngIf="bronnedPlace.cost < 0">	
+          <div><span>Стоимость: </span>{{-1 * bronnedPlace.cost}}</div>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="eins-wrapper">
+    <div class="eins-group">
+        <div class="eins one"></div>
+        <span class="colinfo">Свободное место</span> 
+    </div>
+    <div class="eins-group">
+        <div class="eins two"></div>
+        <span class="colinfo">Свободный диван</span> 
+    </div>
+    <div class="eins-group">
+        <div class="eins three"></div>
+        <span class="colinfo">Забронировано</span> 
+    </div>
+    <div class="eins-group">
+        <div class="eins four"></div>
+        <span class="colinfo">Куплено или недоступно для выбора</span> 
+    </div>
+</div>
