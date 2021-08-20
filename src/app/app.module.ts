@@ -29,7 +29,7 @@ import { CinemaClientComponent } from './cinema-client/cinema-client.component';
     SeatComponent,
     CinemaAdminComponent,
     EditSeatComponent,
-    AddSeatComponent
+    AddSeatComponent,
     CinemaClientComponent
   ],
   imports: [
