@@ -283,8 +283,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   }
 
   private generateRowFromTo(xFrom: number, xTo: number, y: number, row: number, countSeat?: number) {
-    //console.log(xFrom + " " + xTo)
-    console.log("xTo", xTo)
+    console.log(xFrom + " " + xTo)
+    //console.log("xTo", xTo)
     const del = countSeat ? this.seatWidth * countSeat : this.seatWidth
     if (xTo <= this.hallWidth) {
       //console.log("generate")
@@ -456,7 +456,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           selected.style.visibility = "hidden"
           //смотрим элемент под сиденем (перетаскиваемый объект)
           //console.log(targetX)
-          let elemBelow = document.elementFromPoint(targetX + this.shiftContainerX, targetY + this.shiftContainerY)
+          const elementFromX = targetX + this.shiftContainerX - Math.floor(window.scrollX)
+          const elementFromY = targetY + this.shiftContainerY - Math.floor(window.scrollY)
+          let elemBelow = document.elementFromPoint(elementFromX, elementFromY)
           //selected.hidden = false
           //console.log(`${targetX + this.shiftContainerX} ${targetY + this.shiftContainerY}`)
           selected.style.visibility = ""
@@ -1076,7 +1078,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       //console.log(side)
       if (side === Side.RIGHT) {
         const rightBorder = countSeat ? 
-          x + (count * this.seatWidth * countSeat):
+          x + (count * this.seatWidth * countSeat) - this.seatWidth:
           x + ((count - 1) * this.seatWidth)
         //console.log("rightBorder", rightBorder)
 
@@ -1084,7 +1086,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           this.hallWidth + (countSeat * this.seatWidth): 
           this.hallWidth + this.seatWidth
         */
-        console.log("rightBorder", rightBorder, "actualBorder", this.hallWidth/*actualRightBorder*/)
+        //console.log("rightBorder", rightBorder, "actualBorder", this.hallWidth/*actualRightBorder*/)
         if (rightBorder > this.hallWidth) return false
 
         const borderTop = y - this.seatWidth
@@ -1093,7 +1095,10 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         //console.log(`borderTop: ${borderTop} borderBottom: ${borderBottom}`)
 
         const rangeFromX = x - this.seatWidth
-        const rangeToX = x + (count * this.seatWidth)
+        const rangeToX = countSeat ? 
+          x + (count * this.seatWidth * countSeat) :
+          x + (count * this.seatWidth)
+
         const findX = this.data.find(
           ({ seat }) =>
             (seat.y > borderTop && seat.y < borderBottom) &&
@@ -1103,11 +1108,17 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       }
 
       if (side === Side.LEFT) {
-        const leftBorder = x - (count * this.seatWidth)
+        let leftBorder = countSeat ?
+          x - (count * this.seatWidth * countSeat) + 1:
+          x - (count * this.seatWidth) + 1
+        //console.log("leftBorder", leftBorder, "x", x)
         if (leftBorder < 1) return false
-
+       
         const borderTop = y - this.seatWidth
         const borderBottom = y + this.seatWidth
+
+        //надо
+        leftBorder--
 
         const findX = this.data.find(
           ({ seat }) =>
@@ -1129,7 +1140,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     //console.log(elem)
     const x = coordinate.x /// this.scale
     const y = coordinate.y /// this.scale
-
+    //console.log(`x: ${x}, y: ${y}`)
     const ref = this.dialogService.open(AddSeatComponent, {
       data: {
         canAdd: this.canAdd(x, y),
@@ -1144,12 +1155,17 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       //console.log(data)
       if (data) {
         if (data.side === Side.RIGHT) {
-          const xTo = x + ((data.count - 1) * this.seatWidth)
+          const xTo =  data.countSeat ? 
+            x + ((data.count - 1) * this.seatWidth * data.countSeat) :
+            x + ((data.count - 1) * this.seatWidth)
           this.generateRowFromTo(x, xTo, y, data.row, data.countSeat)
         }
         if (data.side === Side.LEFT) {
-          console.log(coordinate, x, y)
-          const xFrom = x - (data.count * this.seatWidth) + 1
+          const xFrom = data.countSeat ? 
+            x - (data.count * this.seatWidth * data.countSeat) + 1 : 
+            x - (data.count * this.seatWidth) + 1
+          //if (data.countSeat)
+          //console.log("x ", x)
           this.generateRowFromTo(xFrom, x, y, data.row, data.countSeat)
         }
         this.adjustmentSeatNumber(data.row)
