@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild, AfterViewInit, HostListener } from '@angular/core'
 
-import { HallStyle } from './cinema-admin-models'
+import { HallStyle, AddSeatError } from './cinema-admin-models'
 import { Seat, Single, Sofa, SeatType } from '../seat/seat-model'
 import { EditSeatComponent } from './edit-seat/edit-seat.component';
 import { AddSeatComponent } from './add-seat/add-seat.component';
@@ -132,7 +132,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   private contextMenuForSeatRef: HTMLElement | null = null
   private contextMenuForHallRef: HTMLElement | null = null
-
+  
   /* for select area */
 
   private topBegin: number = 0
@@ -148,6 +148,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   }
 
   /* ------------------ */
+
 
   //стили для элементов которые используются как droppable
   droppableElements: { height: string, width: string, top: string, left: string }[] = []
@@ -283,8 +284,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   }
 
   private generateRowFromTo(xFrom: number, xTo: number, y: number, row: number, countSeat?: number) {
-    //console.log(xFrom + " " + xTo)
-    console.log("xTo", xTo)
+    console.log(xFrom + " " + xTo)
+    //console.log("xTo", xTo)
     const del = countSeat ? this.seatWidth * countSeat : this.seatWidth
     if (xTo <= this.hallWidth) {
       //console.log("generate")
@@ -456,7 +457,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           selected.style.visibility = "hidden"
           //смотрим элемент под сиденем (перетаскиваемый объект)
           //console.log(targetX)
-          let elemBelow = document.elementFromPoint(targetX + this.shiftContainerX, targetY + this.shiftContainerY)
+          const elementFromX = targetX + this.shiftContainerX - Math.floor(window.scrollX)
+          const elementFromY = targetY + this.shiftContainerY - Math.floor(window.scrollY)
+          let elemBelow = document.elementFromPoint(elementFromX, elementFromY)
           //selected.hidden = false
           //console.log(`${targetX + this.shiftContainerX} ${targetY + this.shiftContainerY}`)
           selected.style.visibility = ""
@@ -512,6 +515,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
             const currShiftX = leftCoordinate + (delShiftX + (this.scale * 2 * index))
 
             //console.log(currShiftX + " " + index)
+            const elementFromX = currShiftX + this.shiftContainerX - Math.floor(window.scrollX)
+            const elementFromY = targetY + this.shiftContainerY - Math.floor(window.scrollY)
 
             selected.style.visibility = "hidden"
             /*this.selectedSeats.forEach(selected => {
@@ -519,7 +524,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
               htmlElem.style.visibility = "hidden"
             })*/
             //смотрим элемент под сиденем (перетаскиваемый объект)
-            let elemBelow = document.elementFromPoint(currShiftX + this.shiftContainerX, targetY + this.shiftContainerY)
+            let elemBelow = document.elementFromPoint(elementFromX, elementFromY)
             //console.log(`${currShiftX + this.shiftContainerX} ${targetY + this.shiftContainerY}`)
             selected.style.visibility = ""
 
@@ -944,44 +949,44 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     //this.generateSelectRowButtons()
   }
 
-  addRow(index: number, countSeat?: number): void {
-    const coordinate = index + 1
+  // addRow(index: number, countSeat?: number): void {
+  //   const coordinate = index + 1
 
-    if (index <= this.hallHeight) {
-      const haveRow = this.data.find(
-        ({ seat }) => seat.y < coordinate + this.seatWidth && seat.y > coordinate - this.seatWidth
-      )
-      if (!haveRow) {
-        const rowUnderGeterated = this.data.filter(({ seat }) => seat.y > coordinate)
-        //console.log(rowUnderGeterated)
-        let newRow = 0
-        if (rowUnderGeterated.length > 0) {
-          let minRow = rowUnderGeterated[0].seat.row
-          rowUnderGeterated.forEach(({ seat }) => {
-            if (seat.row < minRow) {
-              minRow = seat.row
-            }
-            seat.row = seat.row + 1
-          })
-          newRow = minRow
-        } else {
-          if (this.selectRowButton.length === 0) {
-            newRow = 1
-          } else {
-            const sorted = this.selectRowButton.sort((a, b) => b.row - a.row)
-            //console.log(sorted)
-            newRow = sorted[0].row + 1
-          }
-        }
+  //   if (index <= this.hallHeight) {
+  //     const haveRow = this.data.find(
+  //       ({ seat }) => seat.y < coordinate + this.seatWidth && seat.y > coordinate - this.seatWidth
+  //     )
+  //     if (!haveRow) {
+  //       const rowUnderGeterated = this.data.filter(({ seat }) => seat.y > coordinate)
+  //       //console.log(rowUnderGeterated)
+  //       let newRow = 0
+  //       if (rowUnderGeterated.length > 0) {
+  //         let minRow = rowUnderGeterated[0].seat.row
+  //         rowUnderGeterated.forEach(({ seat }) => {
+  //           if (seat.row < minRow) {
+  //             minRow = seat.row
+  //           }
+  //           seat.row = seat.row + 1
+  //         })
+  //         newRow = minRow
+  //       } else {
+  //         if (this.selectRowButton.length === 0) {
+  //           newRow = 1
+  //         } else {
+  //           const sorted = this.selectRowButton.sort((a, b) => b.row - a.row)
+  //           //console.log(sorted)
+  //           newRow = sorted[0].row + 1
+  //         }
+  //       }
 
-        //проверить эффективность
-        this.generateSelectRowButtons()
-        this.data.push(...this.generateDataRow(index, newRow, countSeat))
+  //       //проверить эффективность
+  //       this.generateSelectRowButtons()
+  //       this.data.push(...this.generateDataRow(index, newRow, countSeat))
 
-        //this.seats = this.seats.concat(this.generateRowSeats(1, this.hallWidth, coordinate))
-      }
-    }
-  }
+  //       //this.seats = this.seats.concat(this.generateRowSeats(1, this.hallWidth, coordinate))
+  //     }
+  //   }
+  // }
 
   showButtons(ref: HTMLDivElement) {
     ref.classList.toggle("admin-hall-buttons-show-show")
@@ -992,8 +997,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
     const rightButton = 2
 
-    const shiftCursorX = Math.floor(event.clientX) - this.shiftContainerX
-    const shiftCursorY = Math.floor(event.clientY) - this.shiftContainerY
+    const shiftCursorX = Math.floor(event.clientX + window.scrollX) - this.shiftContainerX
+    const shiftCursorY = Math.floor(event.clientY + window.scrollY) - this.shiftContainerY
 
     if (event.button === rightButton) {
       this.closeContextMenu()
@@ -1047,7 +1052,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         const index = this.data.findIndex(find => find.elem == elem[0])
         this.data.splice(index, 1)*/
       })
-      //не работает
+      
       storeRemoveElements.forEach(({seat}) => {
         const i = this.data.findIndex((find) => seat.x === find.seat.x && seat.y === find.seat.y)
         this.data.splice(i, 1)
@@ -1072,11 +1077,11 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   private canAdd(x: number, y: number) {
     //countSeat - ширина дивана
-    return (row: number, count: number, side: Side, countSeat?: number): boolean => {
+    return (row: number, count: number, side: Side, countSeat?: number): AddSeatError => {
       //console.log(side)
       if (side === Side.RIGHT) {
         const rightBorder = countSeat ? 
-          x + (count * this.seatWidth * countSeat):
+          x + (count * this.seatWidth * countSeat) - this.seatWidth:
           x + ((count - 1) * this.seatWidth)
         //console.log("rightBorder", rightBorder)
 
@@ -1084,8 +1089,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           this.hallWidth + (countSeat * this.seatWidth): 
           this.hallWidth + this.seatWidth
         */
-        console.log("rightBorder", rightBorder, "actualBorder", this.hallWidth/*actualRightBorder*/)
-        if (rightBorder > this.hallWidth) return false
+        //console.log("rightBorder", rightBorder, "actualBorder", this.hallWidth/*actualRightBorder*/)
+        if (rightBorder > this.hallWidth) return new AddSeatError("Выход за правую границу")
 
         const borderTop = y - this.seatWidth
         const borderBottom = y + this.seatWidth
@@ -1093,21 +1098,30 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         //console.log(`borderTop: ${borderTop} borderBottom: ${borderBottom}`)
 
         const rangeFromX = x - this.seatWidth
-        const rangeToX = x + (count * this.seatWidth)
+        const rangeToX = countSeat ? 
+          x + (count * this.seatWidth * countSeat) :
+          x + (count * this.seatWidth)
+
         const findX = this.data.find(
           ({ seat }) =>
             (seat.y > borderTop && seat.y < borderBottom) &&
             (seat.x > rangeFromX && seat.x < rangeToX)
         )
-        if (findX) return false
+        if (findX) return new AddSeatError("Невозможно добавить по данным координатам")
       }
 
       if (side === Side.LEFT) {
-        const leftBorder = x - (count * this.seatWidth)
-        if (leftBorder < 1) return false
-
+        let leftBorder = countSeat ?
+          x - (count * this.seatWidth * countSeat) + 1:
+          x - (count * this.seatWidth) + 1
+        //console.log("leftBorder", leftBorder, "x", x)
+        if (leftBorder < 1) return new AddSeatError("Выход за левую границу")
+       
         const borderTop = y - this.seatWidth
         const borderBottom = y + this.seatWidth
+
+        //надо
+        leftBorder--
 
         const findX = this.data.find(
           ({ seat }) =>
@@ -1115,9 +1129,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
             (seat.x >= leftBorder && seat.x <= x)
         )
 
-        if (findX) return false
+        if (findX) new AddSeatError("Невозможно добавить по данным координатам")
       }
-      return true
+      return new AddSeatError()
     }
   }
 
@@ -1129,7 +1143,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     //console.log(elem)
     const x = coordinate.x /// this.scale
     const y = coordinate.y /// this.scale
-
+    //console.log(`x: ${x}, y: ${y}`)
     const ref = this.dialogService.open(AddSeatComponent, {
       data: {
         canAdd: this.canAdd(x, y),
@@ -1144,12 +1158,17 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       //console.log(data)
       if (data) {
         if (data.side === Side.RIGHT) {
-          const xTo = x + ((data.count - 1) * this.seatWidth)
+          const xTo =  data.countSeat ? 
+            x + ((data.count - 1) * this.seatWidth * data.countSeat) :
+            x + ((data.count - 1) * this.seatWidth)
           this.generateRowFromTo(x, xTo, y, data.row, data.countSeat)
         }
         if (data.side === Side.LEFT) {
-          console.log(coordinate, x, y)
-          const xFrom = x - (data.count * this.seatWidth) + 1
+          const xFrom = data.countSeat ? 
+            x - (data.count * this.seatWidth * data.countSeat) + 1 : 
+            x - (data.count * this.seatWidth) + 1
+          //if (data.countSeat)
+          //console.log("x ", x)
           this.generateRowFromTo(xFrom, x, y, data.row, data.countSeat)
         }
         this.adjustmentSeatNumber(data.row)
@@ -1163,6 +1182,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   }
 
   editSeat(index: number) {
+    //console.log("edit")
+    const editSeats = this.selectedSeats
+
     const seat = this.data[index].seat
 
     const ref = this.dialogService.open(EditSeatComponent, {
@@ -1176,15 +1198,16 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
     ref.onClose.subscribe((data: any) => {
       //console.log(data)
+      //console.log(this.selectedSeats)
       if (data) {
-        if (this.selectedSeats.length === 0) {
+        if (editSeats.length === 0) {
           this.data[index].seat.row = data.row
           this.adjustmentSeatNumber(data.row)
         } else {
           
-          this.selectedSeats.forEach(
+          editSeats.forEach(
             
-            elem => {this.data[elem[2]].seat.row = data.row; console.log(elem[2])}
+            elem => {this.data[elem[2]].seat.row = data.row}
           )
           this.adjustmentSeatNumber(data.row)
         }
@@ -1303,16 +1326,13 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   @HostListener('body:click', ["$event"])
   closeContextMenu(event?: MouseEvent) {
     if (event) {
-      // if (!this.isSelectArea && this.selectedArea.length !== 0) {
-      //     this.selectedArea.forEach(elem => elem.isSelected = false)
-      //     this.selectedArea = []
-      //   }
-      // if (this.isSelectArea && this.selectedSeats.length !== 0 && !event.shiftKey) {
-      //   this.selectedSeats.forEach(([elem, droppable, index, position]) => 
-      //     this.data[index].isSelected = false
-      //   )
-      //   this.selectedSeats = []
-      // }
+      if ((!event.shiftKey && !event.ctrlKey) && this.selectedSeats.length !== 0) {
+        this.isSelectArea = false
+        this.selectedSeats.forEach(([elem, droppable, index, position]) => 
+          this.data[index].isSelected = false
+        )
+        this.selectedSeats = []
+      }
     }
     if (this.contextMenuForSeatRef !== null) {
       this.contextMenuForSeatRef.classList.remove("admin-hall-context-menu-show")

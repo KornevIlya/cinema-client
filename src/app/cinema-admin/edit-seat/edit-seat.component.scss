@@ -4,9 +4,15 @@
         flex-direction: column;
         height: 400px;
 
+        &-label {
+            font-size: 20px;
+            padding-bottom: 5px;
+        }
+
         &-group {
             display: flex;
             flex-direction: column;
+            padding-bottom: 10px;
         }   
     }
 }

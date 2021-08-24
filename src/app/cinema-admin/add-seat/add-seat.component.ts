@@ -4,6 +4,8 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog'
 
 import { Side } from './add-seat-model';
 import { SeatType } from 'src/app/seat/seat-model';
+import { AddSeatError } from '../cinema-admin-models';
+
 @Component({
   selector: 'app-add-seat',
   templateUrl: './add-seat.component.html',
@@ -32,8 +34,12 @@ export class AddSeatComponent implements OnInit {
 
   isShow: boolean = false
 
+ 
   classStyle: string = ""
   private classError:string = "ng-invalid ng-dirty"
+
+  isError: boolean = false
+  errorMessage: string = ""
   
   constructor(private ref: DynamicDialogRef, private config: DynamicDialogConfig) { 
     this.maxCount = this.config.data.maxCount
@@ -58,11 +64,16 @@ export class AddSeatComponent implements OnInit {
   createSeat(): void {
     //console.log(this.selectOption)
     //console.log(this.config.data.canAdd(this.row, this.count, this.selectOption))
-    const canAdd = this.selectSeatType === SeatType.SINGLE ? 
+    const canAdd: AddSeatError = this.selectSeatType === SeatType.SINGLE ? 
       this.config.data.canAdd(this.row, this.count, this.selectSideOption):
       this.config.data.canAdd(this.row, this.count, this.selectSideOption, this.countSeat)
       
-    if (canAdd) {
+    if (canAdd.hasError()) {
+      this.classStyle = this.classError
+      this.errorMessage = canAdd.getMessage()
+      this.isError = true
+    } else {
+      this.isError = false
       if (this.selectSeatType === SeatType.SINGLE) {
         this.ref.close({
           row: this.row,
@@ -77,10 +88,6 @@ export class AddSeatComponent implements OnInit {
           countSeat: this.countSeat
         })
       }
-        
-    } else {
-      this.classStyle = this.classError
     }
-    
   }
 }

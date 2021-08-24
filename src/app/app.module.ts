@@ -10,6 +10,7 @@ import { SeatComponent } from './seat/seat.component';
 import { CinemaAdminComponent } from './cinema-admin/cinema-admin.component';
 import { EditSeatComponent } from './cinema-admin/edit-seat/edit-seat.component';
 import { AddSeatComponent } from './cinema-admin/add-seat/add-seat.component'
+import { CinemaClientComponent } from './cinema-client/cinema-client.component';
 
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -21,7 +22,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DragDropModule } from 'primeng/dragdrop';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { SelectButtonModule } from 'primeng/selectbutton'
-import { CinemaClientComponent } from './cinema-client/cinema-client.component';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule}  from 'primeng/message';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import { CinemaClientComponent } from './cinema-client/cinema-client.component';
     CheckboxModule,
     DragDropModule,
     SpeedDialModule,
-    SelectButtonModule
+    SelectButtonModule,
+    MessagesModule,
+    MessageModule
   ],
   providers: [],
   bootstrap: [AppComponent],

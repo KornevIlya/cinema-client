@@ -1,24 +1,27 @@
 <div class="add-seat">
     <div class="add-seat-group"> 
-        <label>Добавить</label>
+        <label class="add-seat-label">Добавить</label>
         <p-selectButton [options]="sideOptions" [(ngModel)]="selectSideOption" ></p-selectButton>
      </div>
     <div class="add-seat-group"> 
-       <label>Ряд</label>
+       <label class="add-seat-label">Ряд</label>
        <p-inputNumber [(ngModel)]="row" [min]="1" [max]="maxRow"></p-inputNumber>
     </div>
     <div class="add-seat-group">
-        <label>Количество мест</label>
-        <p-inputNumber 
-            [ngClass]="classStyle"
-            [(ngModel)]="count" 
-            [min]="0" 
-            [max]="maxCount" 
-            (onFocus)="onFocus()"
-        ></p-inputNumber>
+        <label class="add-seat-label">Количество мест</label>
+        <div>
+            <p-inputNumber 
+                [ngClass]="classStyle"
+                [(ngModel)]="count" 
+                [min]="0" 
+                [max]="maxCount" 
+                (onFocus)="onFocus()"
+            ></p-inputNumber>
+            <p-message *ngIf="isError" severity="error" [text]="errorMessage"></p-message>
+        </div>
     </div>
     <div class="add-seat-group"> 
-        <label>Тип места</label>
+        <label class="add-seat-label">Тип места</label>
         <p-selectButton 
             [options]="seatTypeOption" 
             [(ngModel)]="selectSeatType" 
@@ -26,7 +29,7 @@
         ></p-selectButton>
      </div>
      <div [class]= "isShow ? 'add-seat-group' : 'add-seat-group-hidden'"> 
-        <label>Количество мест у дивана</label>
+        <label class="add-seat-label">Количество мест у дивана</label>
         <p-inputNumber [(ngModel)]="countSeat" [min]="1"></p-inputNumber>
      </div>
     <div >

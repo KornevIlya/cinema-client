@@ -10,13 +10,13 @@
 
         <div [style]="style.hall">
 
-            <div class="admin-hall-buttons-vertical">
+            <!-- <div class="admin-hall-buttons-vertical">
                 <div *ngFor="let h of hallHeightCount; index as i" [style.height]="buttonVerticalHeight.height">
                     <p-button icon="pi pi-table" (onClick)="addRow(i, 2)"></p-button>
                     <p-button icon="pi pi-plus" (onClick)="addRow(i)"></p-button>  
                     <p-button icon="pi pi-times" (onClick)="deleteRow(i)"></p-button>  
                 </div>
-            </div>
+            </div> -->
             <!-- <div *ngFor="let s of style.showButtonInner; index as i" 
                 class="admin-hall-buttons-show"
                 [style]="style.showButton"
@@ -34,7 +34,7 @@
                 </div>
             </div> -->
             
-            <div *ngFor="let elem of selectRowButton"
+            <!-- <div *ngFor="let elem of selectRowButton"
                 class="admin-hall-buttons-select"
                 [style] = "elem.style"
             >
@@ -43,7 +43,7 @@
                 >
                     {{elem.row}}
                 </p-button>
-            </div>
+            </div> -->
             
             <div *ngFor="let droppableStyle of droppableElements; let i = index"
                 class="elem dropable"
