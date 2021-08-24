@@ -22,8 +22,9 @@ interface Seat {
     number: number
     type: Single | Sofa
     price?: number,
+    brone?: boolean,
+    closet: boolean
     //category: SeatCategory
-    width?: number,
 }
 
 enum SeatType {
