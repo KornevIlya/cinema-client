@@ -283,7 +283,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           y: coordinateY,
           row: row,
           number: seatNumber,
-          type: countSeat ? new Sofa(countSeat) : new Single()
+          type: countSeat ? new Sofa(countSeat) : new Single(),
+          closet: false,
+          price: 150
         },
         position: {
           x: i * this.scale,
@@ -325,7 +327,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
             y: y,
             row,
             number: 5,
-            type: countSeat ? new Sofa(countSeat) : new Single()
+            type: countSeat ? new Sofa(countSeat) : new Single(),
+            closet: false,
+            price: 150
           },
           position: {
             x: (i - 1) * this.scale,

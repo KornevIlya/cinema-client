@@ -21,7 +21,7 @@ interface Seat {
     row: number,
     number: number
     type: Single | Sofa
-    price?: number,
+    price: number,
     brone?: boolean,
     closet: boolean
     //category: SeatCategory

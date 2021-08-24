@@ -1,35 +1,46 @@
 <h1 align="center">Выбор места</h1>
-<h4 align="center" class="title">Экран</h4>
+<h3 align="center" class="fonted">Экран</h3>
 <div class="container" [style]="containerStyle">
     <div *ngFor="let place of places; let i = index"
         class="container-elem"
-        
         [style]="placesStyle[i]"
-        (click)="place.closet || onBrone(place)"
-        (mouseenter)="infos(place)"
-        (mouseleave)="infosOff(place)"
     >
-    <div [class]="place.closet ? 'badge closed' : 'badge'"
-        [class.bronned]="place.brone"
-    >
-        {{place.seat}} 
+      <div  [class]="place.closet ? 'badge closed' : 'badge'"
+          [class.bronned]="place.brone"
+          (click)="place.closet || onBrone(place)"
+          (mouseenter)="infos(place)"
+          (mouseleave)="infosOff(place)"
+          [ngStyle]="placesInnerStyle[i]"
+      >
+          {{place.number}} 
+
+          <div class="gup"  [style]="placesStyle[i].height" *ngIf="place.number == 1">
+            <p> {{place.row}} </p>
+          </div>  
+
+      </div>
+     
     </div>
-</div>
 <div class="suman">
-    <p>Сумма: {{count}} рублей</p>
+  <p>Сумма: {{count}} рублей</p>
     <a href="https://github.com/KornevIlya/cinema-client" target="_blank" class="button5">Забронировать</a>
 </div>
 <div class="info">
     <div *ngIf="check1">
       <div *ngIf="bronnedPlace">
-        <h2>Информация</h2>
-         <div><span>Ряд: </span>{{bronnedPlace.row}}</div>
-        <div><span>Место: </span>{{bronnedPlace.seat}}</div>
-        <div *ngIf="bronnedPlace.cost > 0">	
-          <div><span>Стоимость: </span>{{bronnedPlace.cost}}</div>
-         </div>
-        <div *ngIf="bronnedPlace.cost < 0">	
-          <div><span>Стоимость: </span>{{-1 * bronnedPlace.cost}}</div>
+        <h2 class="fonted">Информация</h2>
+         <div class="fonted"><span>Ряд: </span>{{bronnedPlace!.row}}</div>
+        <div class="fonted"><span>Место: </span>{{bronnedPlace!.number}}</div>
+        <div *ngIf="!bronnedPlace.closet">
+          <div *ngIf="bronnedPlace!.price > 0">	
+            <div class="fonted"><span>Стоимость: </span>{{bronnedPlace!.price}}</div>
+          </div>
+          <div *ngIf="bronnedPlace!.price < 0">	
+            <div class="fonted"><span>Стоимость: </span>{{-1 * bronnedPlace!.price}}</div>
+          </div>
+        </div>
+        <div *ngIf="bronnedPlace.closet">
+          <div class="fonted"><span>Недоступно</span></div>
         </div>
       </div>
     </div>
@@ -40,15 +51,11 @@
         <span class="colinfo">Свободное место</span> 
     </div>
     <div class="eins-group">
-        <div class="eins two"></div>
-        <span class="colinfo">Свободный диван</span> 
-    </div>
-    <div class="eins-group">
         <div class="eins three"></div>
         <span class="colinfo">Забронировано</span> 
     </div>
     <div class="eins-group">
         <div class="eins four"></div>
-        <span class="colinfo">Куплено или недоступно для выбора</span> 
+        <span class="colinfo">Куплено или <br/>недоступно для выбора</span> 
     </div>
 </div>
