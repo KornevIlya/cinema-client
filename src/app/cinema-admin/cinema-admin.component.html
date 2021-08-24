@@ -45,8 +45,8 @@
                 </p-button>
             </div> -->
             
-            <div *ngFor="let droppableStyle of droppableElements; let i = index"
-                class="elem dropable"
+            <div *ngFor="let droppableStyle of styleDroppableElements; let i = index"
+                class="elem droppable"
                 [style]="droppableStyle"
                 #elemRef
                 (contextmenu)="contextMenuForHall($event, contextMenuRef)"

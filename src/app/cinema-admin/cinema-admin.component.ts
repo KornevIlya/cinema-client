@@ -65,6 +65,11 @@ interface SelectAreaStyle {
   height: string
 }
 
+interface DroppableElement {
+  element: HTMLElement | null
+  position: Position
+}
+
 @Component({
   selector: 'app-cinema-admin',
   templateUrl: './cinema-admin.component.html',
@@ -140,6 +145,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   private isSelectArea = false
   //private selectedArea: Data[] = []
 
+
   selectAreaStyle: SelectAreaStyle = {
     height: "",
     width: "",
@@ -150,8 +156,14 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   /* ------------------ */
 
 
+  /*  droppable elements */
+
   //стили для элементов которые используются как droppable
-  droppableElements: { height: string, width: string, top: string, left: string }[] = []
+  styleDroppableElements: { height: string, width: string, top: string, left: string }[] = []
+
+  private droppableElements: DroppableElement[] = []
+
+  /** --------------------------- */
 
   constructor(public dialogService: DialogService) {
     //this.generateSeats()
@@ -171,19 +183,36 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.shiftContainerX = Math.floor(this.adminHall.nativeElement.offsetLeft)
     this.shiftContainerY = Math.floor(this.adminHall.nativeElement.offsetTop)
+
+
+    const droppableElems = document.getElementsByClassName("droppable")
+
+    for(let i = 0; i < this.droppableElements.length; i++) {
+      this.droppableElements[i].element = droppableElems[i] as HTMLElement
+      //console.log(this.droppableElements[i].element)
+    }
+
+    //this.droppableElements.forEach((elem, index) => elem.element = droppableElems[index] as HTMLElement)
   }
 
   /* start generators */
 
   private generateAllElements() {
-    this.droppableElements = []
+    this.styleDroppableElements = []
     for (let i = 0; i < this.hallHeight; i++) {
       for (let j = 0; j < this.hallWidth; j++) {
-        this.droppableElements.push({
+        this.styleDroppableElements.push({
           width: `${this.hallScale * this.seatWidth}px`,
           height: `${(this.hallScale + Math.round(this.hallScale * 0.2)) * this.seatWidth}px`,
           left: `${j * this.scale}px`,
           top: `${i * (this.scale + Math.round(this.hallScale * 0.2))}px`
+        })
+        this.droppableElements.push({
+          position: {
+            x: j * this.scale,
+            y: i * (this.scale + Math.round(this.hallScale * 0.2))
+          },
+          element: null
         })
       }
     }
@@ -470,7 +499,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
            droppable.style.zIndex = ""*/
           if (!elemBelow) return
           //console.log(elemBelow)
-          let droppableBelow = elemBelow.closest('.dropable')
+          let droppableBelow = elemBelow.closest('.droppable')
 
           if (droppableBelow === null) {
             //console.log("null")
