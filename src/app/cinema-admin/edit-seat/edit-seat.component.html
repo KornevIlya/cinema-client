@@ -1,12 +1,12 @@
 <div class="edit-seat">
     <div class="edit-seat-group">
-        <label>Ряд</label>
+        <label class="edit-seat-label">Ряд</label>
         <p-inputNumber [(ngModel)]="row" [min]="1" [max]="rowMax"></p-inputNumber>
     </div>
-    <div>
+    <div class="edit-seat-group">
         <p-button (onClick)="ok()">Ок</p-button>
     </div>
-    <div>
+    <div class="edit-seat-group">
         <p-button (onClick)="close()">Закрыть</p-button>
     </div>
    

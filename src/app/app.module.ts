@@ -20,7 +20,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DragDropModule } from 'primeng/dragdrop';
 import { SpeedDialModule } from 'primeng/speeddial';
-import { SelectButtonModule } from 'primeng/selectbutton'
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule}  from 'primeng/message';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { SelectButtonModule } from 'primeng/selectbutton'
     CheckboxModule,
     DragDropModule,
     SpeedDialModule,
-    SelectButtonModule
+    SelectButtonModule,
+    MessagesModule,
+    MessageModule
   ],
   providers: [],
   bootstrap: [AppComponent],

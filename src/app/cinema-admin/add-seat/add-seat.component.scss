@@ -3,10 +3,17 @@
         display: flex;
         flex-direction: column;
         height: 400px;
+        
+        &-label {
+            font-size: 20px;
+            //line-height: 25px;
+            padding-bottom: 5px;
+        }
 
         &-group {
             display: flex;
             flex-direction: column;
+            padding-bottom: 10px;
 
             &-hidden {
                 display: none;
