@@ -7,6 +7,7 @@ import { AddSeatComponent } from './add-seat/add-seat.component';
 import { Side } from './add-seat/add-seat-model';
 
 import { DialogService } from 'primeng/dynamicdialog';
+import { coerceStringArray } from '@angular/cdk/coercion';
 
 
 type Position = {
@@ -16,7 +17,7 @@ type Position = {
 type SelectedSeat = {
   element: HTMLElement //HTMLElement который перемещаем (отрисовывает Seat)
   droppable: any[] //HTMLElement | null //целевой элемент поверх которого будет наложен Seat
-  lastDroppable: any[]
+  //lastDroppable: any[]
   index: number //индекс элемента (позиция в массиве)
   position: Position //координаты Seat перед началом перемещения
 }
@@ -229,7 +230,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     for (let i = 0; i < 1/*this.hallHeight - this.seatWidth*/; i += this.seatWidth) {
       newData.push(...this.generateDataRow(i, row++))
     }
-    //newData.push(...this.generateDataRow(this.hallHeight - 1, row++, 2))
+    newData.push(...this.generateDataRow(this.hallHeight - 1, row++, 2))
     this.data = newData
   }
 
@@ -398,7 +399,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     const leftButton = 1
 
     if (event.buttons === leftButton) {
-
+      // this.selectedSeats.forEach(selected => {
+      //   console.log(selected.position)
+      // })
       //если не нажата клавиша ctrl или shift, то можем перемещать выбранные элементы
       if (!event.ctrlKey && !event.shiftKey) {
         this.isMovable = true
@@ -414,14 +417,18 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       }
 
       const findSomeElem = this.selectedSeats.find(elem => elem.index === index)
+
       if (!findSomeElem) {
+        //console.log("here")
+        //console.log(this.getDroppable(this.data[index].elem!))
         if (this.data[index].seat.type.type === SeatType.SINGLE) {
           this.selectedSeats.push({
             element: seat, 
-            droppable: [null], 
-            lastDroppable: [null],
+            droppable: [null],//[this.getDroppable(this.data[index].elem!)], 
+            //lastDroppable: [null],//[this.getDroppable(this.data[index].elem!)],
             index, 
-            position: init})
+            position: init
+          })
         } else {
           const droppable: any[] = []
           for (let i = 0; i < this.data[index].seat.type.countSeat; i++) {
@@ -430,7 +437,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           this.selectedSeats.push({
             element: seat, 
             droppable,
-            lastDroppable: droppable, 
+            //lastDroppable: droppable, 
             index, 
             position: init
           })
@@ -471,9 +478,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         let {
           element: selected, 
           droppable: droppableArray, 
-          lastDroppable,
+          //lastDroppable,
           index, 
-          position: initPoint
+          position
         } = this.selectedSeats[i]
         //let droppable = droppableArray[0]
 
@@ -482,7 +489,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         let targetY = this.shiftCursorY
 
         if (selected !== this.movableSeat) {
-
+          //console.log(`delX: ${delX} delY: ${delY}`)
           const moveToX = this.data[index].position.x - delX
           const moveToY = this.data[index].position.y - delY
       
@@ -520,7 +527,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           //console.log(`targetX: ${targetX} targetY: ${targetY}`)
 
           
-
+          //находим элемент на который будет перемещено выбранное место
           const findDropppable = this.droppableElements.find(({position}) => {
             if (position.x < targetX && position.x + this.scale > targetX)
               if (position.y < targetY && position.y + (this.scale + Math.round(this.scale * 0.2)) > targetY) {
@@ -529,35 +536,48 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
             return false
           })
 
-          const positionElem: Position = {
-            x: parseInt(droppableArray[0].style.left),
-            y: parseInt(droppableArray[0].style.top)
+          let droppable = droppableArray[0]
+          //let last = lastDroppable[0]
+          
+          if (!findDropppable) {
+            localError = true
+            continue
           }
           //console.log(selected)
-          const isDropperCorrect = this.dropedCorrect(positionElem, selected)
+          const isDropperCorrect = this.dropedCorrect(findDropppable!.element as HTMLElement)
           //console.log(isDropperCorrect)
-          let droppable = droppableArray[0]
-          let last = lastDroppable[0]
+          
           /**if (droppableArray)
            droppable.style.zIndex = ""*/
           //if (!elemBelow) return
-          if (!findDropppable) return
-
-          if (findDropppable.element == droppable) return 
-          else { 
-            const currDropplable = findDropppable.element as any
-            
-            last = droppable
-            droppable = currDropplable
-
-            currDropplable.firstChild.style.backgroundColor = 'red'
-            currDropplable.style.zIndex = '5'
-
-            if (last) {
-              last.firstChild.style.backgroundColor = ''
-              last.style.zIndex = ''
+          
+          if (isDropperCorrect) {
+            if (findDropppable.element == droppable) continue 
+            else { 
+              const currDropplable = findDropppable.element as any
+              
+              //last = droppable
+              //droppable = currDropplable
+              
+              currDropplable.firstChild.style.backgroundColor = 'red'
+              currDropplable.style.zIndex = '5'
+  
+              if (droppable) {
+                droppable.firstChild.style.backgroundColor = ''
+                droppable.style.zIndex = ''
+              }
+              droppable = currDropplable
+            }
+          } else {
+            localError = true
+            if (droppable) {
+              droppable.firstChild.style.backgroundColor = ''
+              droppable.style.zIndex = ''
+              droppable = null
             }
           }
+
+          
           //console.log(elemBelow)
           //let droppableBelow = elemBelow.closest('.droppable')
 
@@ -589,11 +609,13 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           this.selectedSeats[i] = {
             element: selected, 
             droppable: [droppable], 
-            lastDroppable: [last],
+            //lastDroppable: [last],
             index, 
-            position: initPoint
+            position
           }
-
+          // this.selectedSeats.forEach(selected => {
+          //   console.log(selected.position)
+          // })
         // } else {
         //   const newDroppable: any[] = []
         //   /* selected.style.visibility = "hidden"
@@ -680,6 +702,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     if (!event.ctrlKey) {
       //console.log("end")
       //this.data[index].isSelected = false
+      //console.log(this.movableError)
+      //console.log(this.selectedSeats)
       this.selectedSeats.forEach(
         ({
           element: selected, 
@@ -703,8 +727,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         })
 
         if (this.movableError) {
+          //console.log("here")
           selected.style.left = `${initPoint.x}px`,
-            selected.style.top = `${initPoint.y}px`
+          selected.style.top = `${initPoint.y}px`
 
           this.data[i].position = initPoint
 
@@ -770,17 +795,25 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     elem.style.top = `${y}px`
   }
 
-  private dropedCorrect(droppablePosition: Position, selectElement: HTMLElement/*dragableIndex: number, droppable: HTMLElement*/): boolean {
-    const find = this.data.find(elem => {
-      if (elem.elem != selectElement) {
+  private dropedCorrect(droppableElement: HTMLElement): boolean {
+    const droppablePosition: Position = {
+      x: parseInt(droppableElement.style.left),
+      y: parseInt(droppableElement.style.top)
+    }
+    const find = this.data.find(dataElem => {
+      const oneOfSelectedElem = this.selectedSeats.find(
+        selectedElem => selectedElem.element == dataElem.elem
+      )
+      if (!oneOfSelectedElem) {
         
-        const leftBorder = elem.position.x
-        const rightBorder = elem.position.x + (elem.seat.type.countSeat * this.scale * this.seatWidth)
-        const topBorder = elem.position.y
-        const bottomBorder = elem.position.y + (this.scale * this.seatWidth + Math.floor(this.scale * this.seatWidth * 0.2))
+        const leftBorder = dataElem.position.x - (dataElem.seat.type.countSeat * this.scale * this.seatWidth)
+        const rightBorder = dataElem.position.x + (dataElem.seat.type.countSeat * this.scale * this.seatWidth)
+        const topBorder = dataElem.position.y - (this.scale * this.seatWidth + Math.floor(this.scale * this.seatWidth * 0.2))
+        const bottomBorder = dataElem.position.y + (this.scale * this.seatWidth + Math.floor(this.scale * this.seatWidth * 0.2))
 
-        console.log(`left: ${leftBorder} right: ${rightBorder} top: ${topBorder} bottom: ${bottomBorder}`)
-        console.log(`x: ${droppablePosition.x} y: ${droppablePosition.y}`)
+        //console.log(`left: ${leftBorder} right: ${rightBorder} top: ${topBorder} bottom: ${bottomBorder}`)
+        //console.log(`left: ${leftBorder} right: ${rightBorder}`)
+        //console.log(`x: ${droppablePosition.x} y: ${droppablePosition.y}`)
 
         if (droppablePosition.x > leftBorder && droppablePosition.x < rightBorder)
           if (droppablePosition.y > topBorder && droppablePosition.y < bottomBorder)
@@ -791,7 +824,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       }
       return false
     })
-    console.log(find ? false : true)
+    //console.log(find ? false : true)
     return find ? false : true
     // const x = parseInt(droppable.style.left)
     // const y = parseInt(droppable.style.top)
@@ -969,6 +1002,14 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     return position
   }
 
+  /*getDroppable(selectedElem: HTMLElement): HTMLElement | null {
+    const findDroppable = this.droppableElements.find(elem => 
+      elem.element?.style.left === selectedElem.style.left &&
+      elem.element.style.top === selectedElem.style.top
+    )
+    return findDroppable ? findDroppable.element : null
+  }*/
+
   selectRow(row: number) {
 
     this.isSelectedRow = true
@@ -986,7 +1027,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         this.selectedSeats.push({
           element: elem.elem!,
           droppable,
-          lastDroppable: droppable,
+          //lastDroppable: droppable,
           index,
           position: {
             x: elem.position.x,
@@ -1324,7 +1365,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     const ref = this.dialogService.open(EditSeatComponent, {
       data: {
         row: seat.row,
-        rowMax: this.hallHeight
+        rowMax: this.hallHeight,
+        price: seat.price
       },
       header: 'Edit seat',
       width: '70%',
@@ -1336,13 +1378,14 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       if (data) {
         if (editSeats.length === 0) {
           this.data[index].seat.row = data.row
+          this.data[index].seat.price = data.price
           this.adjustmentSeatNumber(data.row)
         } else {
           
-          editSeats.forEach(
-            
-            elem => {this.data[elem.index].seat.row = data.row}
-          )
+          editSeats.forEach( elem => {
+            this.data[elem.index].seat.row = data.row
+            this.data[elem.index].seat.price = data.price
+          })
           this.adjustmentSeatNumber(data.row)
         }
       }
@@ -1427,9 +1470,12 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           return {
             element: elem.elem!, 
             droppable:[null], 
-            lastDroppable: [null],
+            //lastDroppable: [null],
             index: indexes[i], 
-            position: elem.position
+            position: {
+              x: elem.position.x,
+              y: elem.position.y
+            } //elem.position
           }
         })
       this.selectedSeats.forEach(({ index }) => this.data[index].isSelected = true)
