@@ -18,12 +18,16 @@ export class EditSeatComponent implements OnInit, OnDestroy {
   //number: number
   rowMax: number
 
+  price: number
+
   constructor(private ref: DynamicDialogRef, private config: DynamicDialogConfig) { 
 
     //this.x = this.config.data.seat.x
     //this.y = this.config.data.seat.y
     this.row = this.config.data.row
     this.rowMax = this.config.data.rowMax
+
+    this.price = this.config.data.price
     //this.number = this.config.data.seat.number
 
   }
@@ -40,6 +44,7 @@ export class EditSeatComponent implements OnInit, OnDestroy {
       //x: this.x,
       //y: this.y,
       row: this.row,
+      price: this.price
       //number: this.number
     })
   }

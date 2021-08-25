@@ -4,6 +4,10 @@
         <p-inputNumber [(ngModel)]="row" [min]="1" [max]="rowMax"></p-inputNumber>
     </div>
     <div class="edit-seat-group">
+        <label class="edit-seat-label">Цена</label>
+        <p-inputNumber [(ngModel)]="price" [min]="1"></p-inputNumber>
+    </div>
+    <div class="edit-seat-group">
         <p-button (onClick)="ok()">Ок</p-button>
     </div>
     <div class="edit-seat-group">
