@@ -21,8 +21,8 @@ interface Seat {
     row: number,
     number: number
     type: Single | Sofa
-    price?: number,
-    brone?: boolean,
+    price: number,
+    brone: boolean,
     closet: boolean
     //category: SeatCategory
 }
@@ -33,11 +33,12 @@ enum SeatType {
 }
 
 class Single {
+    private count: number = 1
     get type() {
         return SeatType.SINGLE
     }
     get countSeat() {
-        return 1
+        return this.count
     }
 }
 
