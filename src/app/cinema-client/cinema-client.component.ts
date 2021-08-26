@@ -13,9 +13,9 @@ export class CinemaClientComponent implements OnInit {
   count: number = 0;
   check1: boolean = true;
   check2: boolean = true;
- // vip = VIPS;
+  // vip = VIPS;
   bronnedPlace?: Seat;
- //bronnedVip?: Vip;
+  //bronnedVip?: Vip;
 
   places: Seat[] = PLACES
   placesStyle: any = []
@@ -28,27 +28,27 @@ export class CinemaClientComponent implements OnInit {
     width: "500px",
     height: "500px"
   }
-   tempoStyle = {
+  tempoStyle = {
     height: ""
   }
   positionInfo = {
-    top:  "",
+    top: "",
     left: ""
   }
-  mainStyle = {width: ""}
+  mainStyle = { width: "" }
   constructor() {
     this.places[0].type.type
     //this.mashtabe()
     let mainWidth = this.scale * this.width
-	let tempHeight = this.height
+    let tempHeight = this.height
     mainWidth = mainWidth > 1350 ? mainWidth + 150 : 1350
-	tempHeight = tempHeight > 180 ? tempHeight + 50 : 180
+    tempHeight = tempHeight > 180 ? tempHeight + 50 : 180
     this.mainStyle = {
       width: `${mainWidth}px`
     }
-	this.tempoStyle = {
-		height: '$(tempHeight)px'
-	}
+    this.tempoStyle = {
+      height: '$(tempHeight)px'
+    }
     this.scale = Math.floor(this.scale / this.seatWidth)
     this.containerStyle = {
       width: `${this.scale * this.width}px`,
@@ -93,40 +93,40 @@ export class CinemaClientComponent implements OnInit {
   //    onBroneVip(vip: Vip): void {
   //  this.bronnedVip = vip;
   //  this.count += this.bronnedVip.cost;
-   // this.bronnedVip.brone = !this.bronnedVip.brone;
+  // this.bronnedVip.brone = !this.bronnedVip.brone;
   //  this.bronnedVip.cost *= -1;
   //  }
-     infos(event: MouseEvent, place: Seat): void {
-      // let testo = setTimeout(()=> {
-      //   this.check1 = true;
-      //   this.bronnedPlace = place;
-      //   this.positionInfo = {
-      //     left: `${event.pageX + 15}px`,
-      //     top: `${event.pageY + 15}px`
-      //   } 
-      // } , 500)
-      this.check1 = true;
-      this.bronnedPlace = place;
-      this.positionInfo = {
-        left: `${event.pageX + 15}px`,
-        top: `${event.pageY + -30}px`,
-      }
+  infos(event: MouseEvent, place: Seat): void {
+    // let testo = setTimeout(()=> {
+    //   this.check1 = true;
+    //   this.bronnedPlace = place;
+    //   this.positionInfo = {
+    //     left: `${event.pageX + 15}px`,
+    //     top: `${event.pageY + 15}px`
+    //   } 
+    // } , 500)
+    this.check1 = true;
+    this.bronnedPlace = place;
+    this.positionInfo = {
+      left: `${event.pageX + 15}px`,
+      top: `${event.pageY + -30}px`,
     }
+  }
 
-    infosOff(event: MouseEvent, place: Seat): void {
-      //clearTimeout(testo);
-      this.check1 = !this.check1;
-      this.positionInfo = {
-        left: ``,
-        top: ``
-      }
+  infosOff(event: MouseEvent, place: Seat): void {
+    //clearTimeout(testo);
+    this.check1 = !this.check1;
+    this.positionInfo = {
+      left: ``,
+      top: ``
     }
-    //  infoVips(vip: Vip): void {
-    // this.check2 = true;
-    // this.bronnedVip = vip;
-    // }
-   
-    //  infoVipsOff(vip: Vip): void {
-    // this.check2 = !this.check2;
-    // }
+  }
+  //  infoVips(vip: Vip): void {
+  // this.check2 = true;
+  // this.bronnedVip = vip;
+  // }
+
+  //  infoVipsOff(vip: Vip): void {
+  // this.check2 = !this.check2;
+  // }
 }
