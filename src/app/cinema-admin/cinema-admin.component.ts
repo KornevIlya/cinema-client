@@ -139,7 +139,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   private contextMenuForSeatRef: HTMLElement | null = null
   private contextMenuForHallRef: HTMLElement | null = null
-  
+
   /* for select area */
 
   private topBegin: number = 0
@@ -181,7 +181,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     this.generateSelectRowButtons()
 
   }
-  
+
   ngAfterViewInit() {
     this.shiftContainerX = Math.floor(this.adminHall.nativeElement.offsetLeft)
     this.shiftContainerY = Math.floor(this.adminHall.nativeElement.offsetTop)
@@ -189,7 +189,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
     const droppableElems = document.getElementsByClassName("droppable")
 
-    for(let i = 0; i < this.droppableElements.length; i++) {
+    for (let i = 0; i < this.droppableElements.length; i++) {
       this.droppableElements[i].element = droppableElems[i] as HTMLElement
       //console.log(this.droppableElements[i].element)
     }
@@ -378,7 +378,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     //выделяем ряд при нажатой левой кнопке мыши и зажатым шифтом
     if (event.buttons === 1 && event.shiftKey)
       this.selectRow(this.data[index].seat.row)
-    
+
     this.startDragAndDrop(event, index)
   }
 
@@ -423,22 +423,23 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         //console.log(this.getDroppable(this.data[index].elem!))
         if (this.data[index].seat.type.type === SeatType.SINGLE) {
           this.selectedSeats.push({
-            element: seat, 
+            element: seat,
             droppable: [null],//[this.getDroppable(this.data[index].elem!)], 
             //lastDroppable: [null],//[this.getDroppable(this.data[index].elem!)],
-            index, 
+            index,
             position: init
           })
         } else {
           const droppable: any[] = []
-          for (let i = 0; i < this.data[index].seat.type.countSeat; i++) {
+          const seatCount = (this.data[index].seat.type.countSeat * 2) - 1
+          for (let i = 0; i < seatCount; i++) {
             droppable.push(null)
           }
           this.selectedSeats.push({
-            element: seat, 
+            element: seat,
             droppable,
             //lastDroppable: droppable, 
-            index, 
+            index,
             position: init
           })
         }
@@ -476,10 +477,10 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
       for (let i = 0; i < this.selectedSeats.length; i++) {
         let {
-          element: selected, 
-          droppable: droppableArray, 
+          element: selected,
+          droppable: droppableArray,
           //lastDroppable,
-          index, 
+          index,
           position
         } = this.selectedSeats[i]
         //let droppable = droppableArray[0]
@@ -492,7 +493,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           //console.log(`delX: ${delX} delY: ${delY}`)
           const moveToX = this.data[index].position.x - delX
           const moveToY = this.data[index].position.y - delY
-      
+
           this.moveElemTo(selected, moveToX, moveToY)
 
           this.data[index].position.x = moveToX
@@ -526,9 +527,9 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           //console.log("here")
           //console.log(`targetX: ${targetX} targetY: ${targetY}`)
 
-          
+          //console.log("target: " + targetX)
           //находим элемент на который будет перемещено выбранное место
-          const findDropppable = this.droppableElements.find(({position}) => {
+          const findDropppable = this.droppableElements.find(({ position }) => {
             if (position.x < targetX && position.x + this.scale > targetX)
               if (position.y < targetY && position.y + (this.scale + Math.round(this.scale * 0.2)) > targetY) {
                 return true
@@ -538,30 +539,34 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
           let droppable = droppableArray[0]
           //let last = lastDroppable[0]
-          
+
           if (!findDropppable) {
             localError = true
+            if (droppable) {
+              droppable.firstChild.style.backgroundColor = ''
+              droppable.style.zIndex = ''
+            }
             continue
           }
           //console.log(selected)
-          const isDropperCorrect = this.dropedCorrect(findDropppable!.element as HTMLElement)
+          const isDropperCorrect = this.droppedCorrect(findDropppable!.element as HTMLElement)
           //console.log(isDropperCorrect)
-          
+
           /**if (droppableArray)
            droppable.style.zIndex = ""*/
           //if (!elemBelow) return
-          
+
           if (isDropperCorrect) {
-            if (findDropppable.element == droppable) continue 
-            else { 
+            if (findDropppable.element == droppable) continue
+            else {
               const currDropplable = findDropppable.element as any
-              
+
               //last = droppable
               //droppable = currDropplable
-              
+
               currDropplable.firstChild.style.backgroundColor = 'red'
               currDropplable.style.zIndex = '5'
-  
+
               if (droppable) {
                 droppable.firstChild.style.backgroundColor = ''
                 droppable.style.zIndex = ''
@@ -577,7 +582,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
             }
           }
 
-          
+
           //console.log(elemBelow)
           //let droppableBelow = elemBelow.closest('.droppable')
 
@@ -607,87 +612,299 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           //}
 
           this.selectedSeats[i] = {
-            element: selected, 
-            droppable: [droppable], 
+            element: selected,
+            droppable: [droppable],
             //lastDroppable: [last],
-            index, 
+            index,
             position
           }
+
           // this.selectedSeats.forEach(selected => {
           //   console.log(selected.position)
           // })
-        // } else {
-        //   const newDroppable: any[] = []
-        //   /* selected.style.visibility = "hidden"
-        //    //смотрим элемент под сиденем (перетаскиваемый объект)
-        //    let elemBelow = document.elementFromPoint(targetX + this.shiftContainerX, targetY + this.shiftContainerY)
-        //    selected.style.visibility = ""*/
-        //   const shiftN = Math.floor(this.shiftCursorX / (this.scale * this.seatWidth))
-        //   const delShiftX = this.shiftCursorX - (shiftN * this.scale * this.seatWidth)
-        //   //console.log(delShiftX)
-        //   const leftCoordinate = selected.offsetLeft
-        //   //console.log(leftCoordinate)
+          // } else {
+          //   const newDroppable: any[] = []
+          //   /* selected.style.visibility = "hidden"
+          //    //смотрим элемент под сиденем (перетаскиваемый объект)
+          //    let elemBelow = document.elementFromPoint(targetX + this.shiftContainerX, targetY + this.shiftContainerY)
+          //    selected.style.visibility = ""*/
+          //   const shiftN = Math.floor(this.shiftCursorX / (this.scale * this.seatWidth))
+          //   const delShiftX = this.shiftCursorX - (shiftN * this.scale * this.seatWidth)
+          //   //console.log(delShiftX)
+          //   const leftCoordinate = selected.offsetLeft
+          //   //console.log(leftCoordinate)
 
-        //   /*const innerSize = Math.round(this.scale * 0.8)
-        //   const innerWidth = innerSize * this.seatWidth*/
-        //   droppableArray.forEach((droppable, index) => {
+          //   /*const innerSize = Math.round(this.scale * 0.8)
+          //   const innerWidth = innerSize * this.seatWidth*/
+          //   droppableArray.forEach((droppable, index) => {
 
-        //     const currShiftX = leftCoordinate + (delShiftX + (this.scale * 2 * index))
+          //     const currShiftX = leftCoordinate + (delShiftX + (this.scale * 2 * index))
 
-        //     //console.log(currShiftX + " " + index)
-        //     const elementFromX = currShiftX + this.shiftContainerX - Math.floor(window.scrollX)
-        //     const elementFromY = targetY + this.shiftContainerY - Math.floor(window.scrollY)
+          //     //console.log(currShiftX + " " + index)
+          //     const elementFromX = currShiftX + this.shiftContainerX - Math.floor(window.scrollX)
+          //     const elementFromY = targetY + this.shiftContainerY - Math.floor(window.scrollY)
 
-        //     selected.style.visibility = "hidden"
-        //     /*this.selectedSeats.forEach(selected => {
-        //       const [htmlElem] =  selected
-        //       htmlElem.style.visibility = "hidden"
-        //     })*/
-        //     //смотрим элемент под сиденем (перетаскиваемый объект)
-        //     let elemBelow = document.elementFromPoint(elementFromX, elementFromY)
-        //     //console.log(`${currShiftX + this.shiftContainerX} ${targetY + this.shiftContainerY}`)
-        //     selected.style.visibility = ""
+          //     selected.style.visibility = "hidden"
+          //     /*this.selectedSeats.forEach(selected => {
+          //       const [htmlElem] =  selected
+          //       htmlElem.style.visibility = "hidden"
+          //     })*/
+          //     //смотрим элемент под сиденем (перетаскиваемый объект)
+          //     let elemBelow = document.elementFromPoint(elementFromX, elementFromY)
+          //     //console.log(`${currShiftX + this.shiftContainerX} ${targetY + this.shiftContainerY}`)
+          //     selected.style.visibility = ""
 
-        //     /*this.selectedSeats.forEach(selected => {
-        //       const [htmlElem] =  selected
-        //       htmlElem.style.visibility = ""
-        //     })*/
-        //     if (!elemBelow) return
+          //     /*this.selectedSeats.forEach(selected => {
+          //       const [htmlElem] =  selected
+          //       htmlElem.style.visibility = ""
+          //     })*/
+          //     if (!elemBelow) return
 
-        //     let droppableBelow = elemBelow.closest('.dropable')
+          //     let droppableBelow = elemBelow.closest('.dropable')
 
-        //     if (droppableBelow === null) {
-        //       localError = true
-        //     } else {
-        //       if (!this.dropedCorrect(index, droppableBelow as HTMLElement)) {
-        //         droppableBelow = null
-        //         localError = true
-        //       }
-        //     }
-        //     if (droppable != droppableBelow) {
-        //       if (droppable) {
-        //         // логика обработки процесса "вылета" из droppable (удаляем подсветку)
-        //         droppable!.firstChild.style.backgroundColor = ''
-        //         droppable.style.zIndex = ''
-        //       }
-        //       droppable = droppableBelow;
-        //       if (droppable) {
-        //         // логика обработки процесса, когда мы "влетаем" в элемент droppable
-        //         droppable.firstChild.style.backgroundColor = 'red'
-        //         droppable.style.zIndex = '5'
-        //       }
-        //     }
+          //     if (droppableBelow === null) {
+          //       localError = true
+          //     } else {
+          //       if (!this.dropedCorrect(index, droppableBelow as HTMLElement)) {
+          //         droppableBelow = null
+          //         localError = true
+          //       }
+          //     }
+          //     if (droppable != droppableBelow) {
+          //       if (droppable) {
+          //         // логика обработки процесса "вылета" из droppable (удаляем подсветку)
+          //         droppable!.firstChild.style.backgroundColor = ''
+          //         droppable.style.zIndex = ''
+          //       }
+          //       droppable = droppableBelow;
+          //       if (droppable) {
+          //         // логика обработки процесса, когда мы "влетаем" в элемент droppable
+          //         droppable.firstChild.style.backgroundColor = 'red'
+          //         droppable.style.zIndex = '5'
+          //       }
+          //     }
 
-        //     newDroppable.push(droppable)
-        //   })
-        //   this.selectedSeats[i] = {
-        //     element: selected, 
-        //     droppable: newDroppable, 
-        //     lastDroppable: droppableArray,
-        //     index, 
-        //     position: initPoint
-        //   }
-         // this.selectedSeats[i] = [selected, newDroppable, index, initPoint]
+          //     newDroppable.push(droppable)
+          //   })
+          //   this.selectedSeats[i] = {
+          //     element: selected, 
+          //     droppable: newDroppable, 
+          //     lastDroppable: droppableArray,
+          //     index, 
+          //     position: initPoint
+          //   }
+          // this.selectedSeats[i] = [selected, newDroppable, index, initPoint]
+        } else {
+          const shiftN = Math.floor(this.shiftCursorX / (this.scale * this.seatWidth))
+          //const delShiftX = this.shiftCursorX - (shiftN * this.scale * this.seatWidth)
+          //console.log(`shiftN: ${shiftN} del: ${delShiftX}`)
+          //console.log(`targetXBefore: ${targetX}`)
+          targetX -= shiftN * this.scale * this.seatWidth
+          //console.log(`targetXAfter: ${targetX}`)
+
+
+          //console.log(targetX)
+
+          /*let findDropppableIndex: number = this.droppableElements.findIndex(({ position }) => {
+            if (position.x < targetX && position.x + this.scale > targetX)
+              if (position.y < targetY && position.y + (this.scale + Math.round(this.scale * 0.2)) > targetY) {
+                return true
+              }
+            return false
+          })*/
+
+          const countDroppable = (this.data[index].seat.type.countSeat * 2) - 1
+          const findDroppable: any[] = []
+
+          /*for (let i = 0; i < countDroppable; i++) {
+            findDroppable.push(null)
+          }*/
+
+
+          let countFindDroppabel = 0
+
+          for (let i = 0; i < this.droppableElements.length; i++) {
+
+            const positionDroppable = this.droppableElements[i].position
+            const rightBorder = positionDroppable.x + (this.scale * this.data[index].seat.type.countSeat)
+            const bottomBorder = positionDroppable.y + (this.scale + Math.round(this.scale * 0.2))
+
+
+            if (positionDroppable.x < targetX && rightBorder > targetX) {
+              if (positionDroppable.y < targetY && bottomBorder > targetY) {
+                //findDroppable[countFindDroppabel] = this.droppableElements[i]
+                findDroppable.push(this.droppableElements[i])
+
+                countFindDroppabel++
+                targetX += this.scale
+
+                if (countFindDroppabel === countDroppable)
+                  break
+
+              }
+            }
+          }
+          /*if (findDropppableIndex){
+            for (let i = 0; i < this.data[index].seat.type.countSeat; i++) {
+              findDroppable.push(this.droppableElements[findDropppableIndex++])
+            }
+          }*/
+          let droppable = droppableArray
+
+          if (findDroppable.length !== countDroppable) {
+            localError = true
+
+            console.log("error")
+
+            droppable.forEach(drop => {
+              drop.firstChild.style.backgroundColor = ''
+              drop.style.zIndex = ''
+            })
+
+            continue
+          }
+
+
+          //let last = lastDroppable[0]
+
+
+          const isDropperCorrect = this.droppedCorrect(findDroppable[0].element as HTMLElement)
+          //console.log(isDropperCorrect)
+          const newDroppable: any[] = []
+          if (isDropperCorrect) {
+            for (let i = 0; i < droppable.length; i++) {
+              const currDropplable = findDroppable[i].element
+              if (currDropplable == droppable[i]) {
+                currDropplable.firstChild.style.backgroundColor = 'red'
+                currDropplable.style.zIndex = '5'
+                newDroppable.push(currDropplable)
+              }
+              else {
+                if (droppable[i]) {
+                  droppable[i].firstChild.style.backgroundColor = ''
+                  droppable[i].style.zIndex = ''
+                }
+                newDroppable.push(currDropplable)
+              }
+            }
+          } else {
+            for (let i = 0; i < droppable.length; i++) {
+              localError = true
+              if (droppable[i]) {
+                droppable[i].firstChild.style.backgroundColor = ''
+                droppable[i].style.zIndex = ''
+              }
+              newDroppable.push(null)
+            }
+          }
+          //console.log(newDroppable)
+          
+          // const newDroppable: any[] = []
+
+          // //console.log("currentDroppable")
+          // //console.log(findDroppable)
+          // //console.log("lastDroppable")
+          // //console.log(droppable)
+          // for (let i = 0; i < droppable.length; i++) {
+          //   const currDropplable = findDroppable[i].element
+
+          //   // console.log("find")
+          //   // console.log(currDropplable)
+          //   // console.log("drop")
+          //   // console.log(droppable[i])
+          //   if (currDropplable == droppable[i]) {
+          //     newDroppable.push(currDropplable)
+          //     //console.log("true")
+          //     continue
+          //   }
+          //   else {
+          //     currDropplable.firstChild.style.backgroundColor = 'red'
+          //     currDropplable.style.zIndex = '5'
+
+          //     if (droppable[i]) {
+          //       droppable[i].firstChild.style.backgroundColor = ''
+          //       droppable[i].style.zIndex = ''
+          //     }
+          //     newDroppable.push(currDropplable)
+          //   } /*else {
+          //     if (droppable[i]) {
+          //       droppable[i].firstChild.style.backgroundColor = ''
+          //       droppable[i].style.zIndex = ''
+          //     }
+          //     newDroppable.push(null)
+          //   }*/
+          // }
+          //console.log("----------")
+          // droppable.forEach((droppable, index) => {
+          //   const currDropplable = findDroppable[index].element
+          //   if (currDropplable && findDroppable !== droppable) {
+
+
+          //     currDropplable.firstChild.style.backgroundColor = 'red'
+          //     currDropplable.style.zIndex = '5'
+
+          //     if (droppable) {
+          //       droppable.firstChild.style.backgroundColor = ''
+          //       droppable.style.zIndex = ''
+          //     }
+          //     newDroppable.push(currDropplable)
+          //   } else {
+          //     if (droppable) {
+          //       droppable.firstChild.style.backgroundColor = ''
+          //       droppable.style.zIndex = ''
+          //     }
+          //     newDroppable.push(null)
+          //   }
+
+
+          //   /*if (droppable && droppable !== findDroppable[index].element) {
+          //     const currDropplable = findDroppable[index].element
+
+          //     currDropplable.firstChild.style.backgroundColor = 'red'
+          //     currDropplable.style.zIndex = '5'
+
+          //     if (droppable) {
+          //       droppable.firstChild.style.backgroundColor = ''
+          //       droppable.style.zIndex = ''
+          //     }
+          //     newDroppable.push(currDropplable)
+          //   } else {
+          //     newDroppable.push(null)
+          //   }  */
+          // })
+          //console.log(selected)
+          //const isDropperCorrect = this.dropedCorrect(findDropppable!.element as HTMLElement)
+          //console.log(isDropperCorrect)
+
+
+          // if (isDropperCorrect) {
+          //   if (findDropppable.element == droppable) continue 
+          //   else { 
+          //     const currDropplable = findDropppable.element as any
+
+          //     currDropplable.firstChild.style.backgroundColor = 'red'
+          //     currDropplable.style.zIndex = '5'
+
+          //     if (droppable) {
+          //       droppable.firstChild.style.backgroundColor = ''
+          //       droppable.style.zIndex = ''
+          //     }
+          //     droppable = currDropplable
+          //   }
+          // } else {
+          //   localError = true
+          //   if (droppable) {
+          //     droppable.firstChild.style.backgroundColor = ''
+          //     droppable.style.zIndex = ''
+          //     droppable = null
+          //   }
+          // }
+          this.selectedSeats[i] = {
+            element: selected,
+            droppable: newDroppable,
+            index,
+            position
+          }
         }
       }
 
@@ -706,69 +923,69 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       //console.log(this.selectedSeats)
       this.selectedSeats.forEach(
         ({
-          element: selected, 
-          droppable: target, 
-          index: i, 
+          element: selected,
+          droppable: target,
+          index: i,
           position: initPoint
         }) => {
-        
-        selected.style.zIndex = ""
 
-        this.data[i].isSelected = false
-        /*if (target){
-          target.firstChild.style.backgroundColor = ''
-          target.style.zIndex = ""
-        }*/
-        target.forEach(elem => {
-          if (elem !== null) {
-            elem.firstChild.style.backgroundColor = ''
-            elem.style.zIndex = ""
-          }
-        })
+          selected.style.zIndex = ""
 
-        if (this.movableError) {
-          //console.log("here")
-          selected.style.left = `${initPoint.x}px`,
-          selected.style.top = `${initPoint.y}px`
+          this.data[i].isSelected = false
+          /*if (target){
+            target.firstChild.style.backgroundColor = ''
+            target.style.zIndex = ""
+          }*/
+          target.forEach(elem => {
+            if (elem !== null) {
+              elem.firstChild.style.backgroundColor = ''
+              elem.style.zIndex = ""
+            }
+          })
 
-          this.data[i].position = initPoint
+          if (this.movableError) {
+            //console.log("here")
+            selected.style.left = `${initPoint.x}px`,
+              selected.style.top = `${initPoint.y}px`
 
-        } else {
-          if (target[0]) {
-            const left = target[0].style.left
-            const top = target[0].style.top
-            selected.style.left = left
-            selected.style.top = top
+            this.data[i].position = initPoint
 
-            const currPosition = {
-              x: parseInt(left),
-              y: parseInt(top)
+          } else {
+            if (target[0]) {
+              const left = target[0].style.left
+              const top = target[0].style.top
+              selected.style.left = left
+              selected.style.top = top
+
+              const currPosition = {
+                x: parseInt(left),
+                y: parseInt(top)
+              }
+
+              this.data[i].position = currPosition
+
+              const coordinate = this.convertToCoordinate(left, top)
+              this.data[i].seat.x = coordinate.x
+              this.data[i].seat.y = coordinate.y
             }
 
-            this.data[i].position = currPosition
+            // if (this.isSelectedRow) {
+            //   const [selected, target, i, initPoint] = this.selectedSeats[0]
+            //   //перемещаем кнопку выбора ряда
+            //   const selectedRowIndex = this.selectRowButton
+            //     .findIndex(elem => elem.row === this.data[i].seat.row)
+            //   this.selectRowButton[selectedRowIndex] = {
+            //     ...this.selectRowButton[selectedRowIndex],
+            //     style: {
+            //       top: `${this.data[i].position.y}px`,
+            //       left: `${-190}px`
+            //     }
+            //   }
 
-            const coordinate = this.convertToCoordinate(left, top)
-            this.data[i].seat.x = coordinate.x
-            this.data[i].seat.y = coordinate.y
+            //   this.isSelectedRow = false
+            // }
           }
-
-          // if (this.isSelectedRow) {
-          //   const [selected, target, i, initPoint] = this.selectedSeats[0]
-          //   //перемещаем кнопку выбора ряда
-          //   const selectedRowIndex = this.selectRowButton
-          //     .findIndex(elem => elem.row === this.data[i].seat.row)
-          //   this.selectRowButton[selectedRowIndex] = {
-          //     ...this.selectRowButton[selectedRowIndex],
-          //     style: {
-          //       top: `${this.data[i].position.y}px`,
-          //       left: `${-190}px`
-          //     }
-          //   }
-
-          //   this.isSelectedRow = false
-          // }
-        }
-      })
+        })
       this.checkSeatAfterMove()
       /*if (!this.movableError && this.isSelectedRow) {
         const [selected, target, i, initPoint] = this.selectedSeats[0]
@@ -795,7 +1012,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     elem.style.top = `${y}px`
   }
 
-  private dropedCorrect(droppableElement: HTMLElement): boolean {
+  private droppedCorrect(droppableElement: HTMLElement): boolean {
     const droppablePosition: Position = {
       x: parseInt(droppableElement.style.left),
       y: parseInt(droppableElement.style.top)
@@ -805,7 +1022,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         selectedElem => selectedElem.element == dataElem.elem
       )
       if (!oneOfSelectedElem) {
-        
+
         const leftBorder = dataElem.position.x - (dataElem.seat.type.countSeat * this.scale * this.seatWidth)
         const rightBorder = dataElem.position.x + (dataElem.seat.type.countSeat * this.scale * this.seatWidth)
         const topBorder = dataElem.position.y - (this.scale * this.seatWidth + Math.floor(this.scale * this.seatWidth * 0.2))
@@ -930,7 +1147,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     }
 
     if (this.isSelectedRow) {
-      
+
       const rows = new Map<number, Seat[]>()
 
       this.data.forEach(({ seat }) => {
@@ -1016,7 +1233,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     const findElem = this.data.find(({ seat }) => seat.row === row)
 
     const droppable: any[] = []
-    for (let i = 0; i < findElem!.seat.type.countSeat; i++) {
+    const count = (findElem!.seat.type.countSeat * 2) - 1
+    for (let i = 0; i < count; i++) {
       droppable.push(null)
     }
 
@@ -1080,7 +1298,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  
+
 
   updateState() {
     this.scale = this.hallScale
@@ -1227,8 +1445,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         const index = this.data.findIndex(find => find.elem == elem[0])
         this.data.splice(index, 1)*/
       })
-      
-      storeRemoveElements.forEach(({seat}) => {
+
+      storeRemoveElements.forEach(({ seat }) => {
         const i = this.data.findIndex((find) => seat.x === find.seat.x && seat.y === find.seat.y)
         this.data.splice(i, 1)
       })
@@ -1255,8 +1473,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     return (row: number, count: number, side: Side, countSeat?: number): AddSeatError => {
       //console.log(side)
       if (side === Side.RIGHT) {
-        const rightBorder = countSeat ? 
-          x + (count * this.seatWidth * countSeat) - this.seatWidth:
+        const rightBorder = countSeat ?
+          x + (count * this.seatWidth * countSeat) - this.seatWidth :
           x + ((count - 1) * this.seatWidth)
         //console.log("rightBorder", rightBorder)
 
@@ -1273,7 +1491,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         //console.log(`borderTop: ${borderTop} borderBottom: ${borderBottom}`)
 
         const rangeFromX = x - this.seatWidth
-        const rangeToX = countSeat ? 
+        const rangeToX = countSeat ?
           x + (count * this.seatWidth * countSeat) :
           x + (count * this.seatWidth)
 
@@ -1287,11 +1505,11 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
       if (side === Side.LEFT) {
         let leftBorder = countSeat ?
-          x - (count * this.seatWidth * countSeat) + 1:
+          x - (count * this.seatWidth * countSeat) + 1 :
           x - (count * this.seatWidth) + 1
         //console.log("leftBorder", leftBorder, "x", x)
         if (leftBorder < 1) return new AddSeatError("Выход за левую границу")
-       
+
         const borderTop = y - this.seatWidth
         const borderBottom = y + this.seatWidth
 
@@ -1333,14 +1551,14 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       //console.log(data)
       if (data) {
         if (data.side === Side.RIGHT) {
-          const xTo =  data.countSeat ? 
+          const xTo = data.countSeat ?
             x + ((data.count - 1) * this.seatWidth * data.countSeat) :
             x + ((data.count - 1) * this.seatWidth)
           this.generateRowFromTo(x, xTo, y, data.row, data.countSeat)
         }
         if (data.side === Side.LEFT) {
-          const xFrom = data.countSeat ? 
-            x - (data.count * this.seatWidth * data.countSeat) + 1 : 
+          const xFrom = data.countSeat ?
+            x - (data.count * this.seatWidth * data.countSeat) + 1 :
             x - (data.count * this.seatWidth) + 1
           //if (data.countSeat)
           //console.log("x ", x)
@@ -1348,7 +1566,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         }
         this.adjustmentSeatNumber(data.row)
       }
-      
+
     })
 
     /*ref.onDestroy.subscribe(() => {
@@ -1381,8 +1599,8 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
           this.data[index].seat.price = data.price
           this.adjustmentSeatNumber(data.row)
         } else {
-          
-          editSeats.forEach( elem => {
+
+          editSeats.forEach(elem => {
             this.data[elem.index].seat.row = data.row
             this.data[elem.index].seat.price = data.price
           })
@@ -1452,7 +1670,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
       const topBorder = top - this.scale
       const bottomBorder = top + height
 
-      this.selectedSeats.forEach(({index}) => {
+      this.selectedSeats.forEach(({ index }) => {
         this.data[index].isSelected = false
       })
 
@@ -1468,10 +1686,10 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
         })
         .map((elem, i) => {
           return {
-            element: elem.elem!, 
-            droppable:[null], 
+            element: elem.elem!,
+            droppable: [null],
             //lastDroppable: [null],
-            index: indexes[i], 
+            index: indexes[i],
             position: {
               x: elem.position.x,
               y: elem.position.y
@@ -1514,7 +1732,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
     if (event) {
       if ((!event.shiftKey && !event.ctrlKey) && this.selectedSeats.length !== 0) {
         this.isSelectArea = false
-        this.selectedSeats.forEach(({ index }) => 
+        this.selectedSeats.forEach(({ index }) =>
           this.data[index].isSelected = false
         )
         this.selectedSeats = []
