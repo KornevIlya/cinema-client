@@ -158,12 +158,21 @@ const PLACES: Seat[] = [
     price: 200
   }*/
 ]
-for (let i = 0; i < 19; i++) {
+let corona = true
+for (let i = 0; i < 15; i++) {
   for (let j = 0; j < 20; j++) {
+	 if((i + j)%2 == 0)
+	 {
+		corona = true;
+	 }
+	 else
+	 {
+		corona = false;
+	 }
     PLACES.push({
       x: j + 1,
       y: i + 1,
-      closet: false,
+      closet: corona,
       brone: false,
       number: j + 1,
       row: i + 1,
@@ -172,23 +181,31 @@ for (let i = 0; i < 19; i++) {
     })
   }
 }
-
 let number = 1
-for (let j = 0; j < 9; j += 2) {
+for (let j = 0; j < 20; j += 2) {
+	 if(j%4 != 2)
+	 {
+		corona = true;
+	 }
+	 else
+	 {
+		corona = false;
+	 } 
   PLACES.push({
     x: j + 1,
-    y: 19 + 1,
-    closet: false,
+    y: 15 + 1,
+    closet: corona,
     brone: false,
     number,
-    row: 19 + 1,
+    row: 15 + 1,
     type: new Sofa(2),
     price: 400
   })
   number++
 }
+
+const HEIGHT = 15
 const WIDTH = 20
-const HEIGHT = 20
 const SEAT_WIDTH = 1
 export { PLACES, WIDTH, HEIGHT, SEAT_WIDTH }
 

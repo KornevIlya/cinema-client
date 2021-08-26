@@ -20,7 +20,7 @@ export class CinemaClientComponent implements OnInit {
   places: Seat[] = PLACES
   placesStyle: any = []
   placesInnerStyle: any = []
-  scale = 25
+  scale = 35
   width = WIDTH
   height = HEIGHT
   seatWidth = SEAT_WIDTH
@@ -28,10 +28,33 @@ export class CinemaClientComponent implements OnInit {
     width: "500px",
     height: "500px"
   }
+   tempoStyle = {
+    height: ""
+  }
+  positionInfo = {
+    top:  "",
+    left: ""
+  }
+  mainStyle = {width: ""}
   constructor() {
     this.places[0].type.type
     //this.mashtabe()
+    let mainWidth = this.scale * this.width
+	let tempHeight = this.height
+    mainWidth = mainWidth > 1350 ? mainWidth + 150 : 1350
+	tempHeight = tempHeight > 180 ? tempHeight + 50 : 180
+    this.mainStyle = {
+      width: `${mainWidth}px`
+    }
+	this.tempoStyle = {
+		height: '$(tempHeight)px'
+	}
     this.scale = Math.floor(this.scale / this.seatWidth)
+    this.containerStyle = {
+      width: `${this.scale * this.width}px`,
+      height: `${this.scale * this.height}px`
+    }
+
     this.places.forEach(elem => {
       this.placesStyle.push({
         top: `${((elem.y - 1/* - 0.7*/) * this.scale)}px`,
@@ -73,12 +96,30 @@ export class CinemaClientComponent implements OnInit {
    // this.bronnedVip.brone = !this.bronnedVip.brone;
   //  this.bronnedVip.cost *= -1;
   //  }
-     infos(place: Seat): void {
-    this.check1 = true;
-    this.bronnedPlace = place;
+     infos(event: MouseEvent, place: Seat): void {
+      // let testo = setTimeout(()=> {
+      //   this.check1 = true;
+      //   this.bronnedPlace = place;
+      //   this.positionInfo = {
+      //     left: `${event.pageX + 15}px`,
+      //     top: `${event.pageY + 15}px`
+      //   } 
+      // } , 500)
+      this.check1 = true;
+      this.bronnedPlace = place;
+      this.positionInfo = {
+        left: `${event.pageX + 15}px`,
+        top: `${event.pageY + -30}px`,
+      }
     }
-    infosOff(place: Seat): void {
-    this.check1 = !this.check1;
+
+    infosOff(event: MouseEvent, place: Seat): void {
+      //clearTimeout(testo);
+      this.check1 = !this.check1;
+      this.positionInfo = {
+        left: ``,
+        top: ``
+      }
     }
     //  infoVips(vip: Vip): void {
     // this.check2 = true;
