@@ -5,9 +5,10 @@ import { Seat, Single, Sofa, SeatType } from '../seat/seat-model'
 import { EditSeatComponent } from './edit-seat/edit-seat.component';
 import { AddSeatComponent } from './add-seat/add-seat.component';
 import { Side } from './add-seat/add-seat-model';
+import { CinemaServiceService } from '../cinema-service.service';
+import { Hall } from '../cinema-model';
 
 import { DialogService } from 'primeng/dynamicdialog';
-import { coerceStringArray } from '@angular/cdk/coercion';
 
 
 type Position = {
@@ -167,7 +168,7 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
 
   /** --------------------------- */
 
-  constructor(public dialogService: DialogService) {
+  constructor(public dialogService: DialogService, private cinemaService: CinemaServiceService) {
     //this.generateSeats()
     this.generateData()
     this.generateAllElements()
@@ -1720,6 +1721,22 @@ export class CinemaAdminComponent implements OnInit, AfterViewInit {
   }
 
   /* select area end*/
+
+  save() {
+    const seats: Seat[] = []
+
+    this.data.forEach(({seat})=> seats.push(seat))
+
+    const dataFetch: Hall = {
+      width: this.hallWidth,
+      height: this.hallHeight,
+      seatWidth: this.seatWidth,
+      seats
+    }
+    this.cinemaService
+      .save(dataFetch)
+      .subscribe((a) => console.log(a))
+  }
 
   @HostListener('window:resize')
   resize() {
