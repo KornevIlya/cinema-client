@@ -1,5 +1,4 @@
 .title {
-    line-height: 10%
 }
 .container {
     position: relative;
@@ -8,42 +7,114 @@
 
 .container-elem {
     position: absolute;
-    cursor: pointer;
 } 
 
 .badge {
+    cursor: pointer;
+    font-family: Yu Gothic, serif;
+    font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: small;
-    color: white;
-    background-color:#9db9d1;
+    //color: white;
+  //  background-color:#7ca1c2;
+    color: black;
+    background-color:white;
     height: 80%;
-    width: 80%;
+    //width: 80%;
+    //height: 100%;
+    //width: 100%;
+    //margin: 15px;
+	border: 1px solid black;
     border-radius: 15px 15px 15px 15px;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;   
+    -khtml-user-select: none;    
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;   
 }
 
 .badge.closed{
     background-color:#000000;
-}
-.bronned {
-    background-color:#42aaff;
+	color: white;
+    cursor: default;
 }
 
+.badge:hover{
+    border: 3px solid #008cba;
+}
+
+.badge.closed:hover{
+    border:0px;
+}
+
+.bronned {
+   // background-color:#42aaff;
+	//border: 1px solid #42aaff;
+	background-color:#008cba;
+	border: 1px solid #008cba;
+	color: white;
+}
+
+.movie {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+	width: 60%
+}
+
+.info-wrapper {
+   //position: relative;
+   // float: right;
+   	width:20%;
+    right: -30px;
+    bottom: -140px;
+}
 .info {
-    position: fixed;
-    bottom: 240px;
-    right: 100px;
+    position: absolute;
+    background-color: white;
+    border: solid 1px black;
+    //float: right;
+   // right: 135px;
     display: flex;
     justify-content: center;
     text-align: center;
 }
 
 .suman {
-  position: fixed;
-  right: 100px;
-  bottom: 440px;
-  text-align: center;
+    //position: relative;
+    //float: right;
+    font-family: Cambria Math, serif;
+    font-weight: bold;
+    font-size: large;
+    //position: fixed;
+    ///right: 80px;
+    //bottom: 440px;
+    text-align: center;
+}
+
+
+.main {
+    margin: 0 auto;
+    position: relative;
+}
+.fonted {
+    font-family: Cambria Math, serif;
+	font-size: large;
+	font-weight: bold;
+}
+  
+.gup {
+    position: absolute;
+    font-family: Yu Gothic, serif;
+    font-weight: bold;
+    left: -40px;
+    color: black;
+  //width: 1rem;
+  //margin-left: -1.3em;
+  //margin-top: -2.5em;
 }
 
 .button5 {
@@ -52,10 +123,15 @@
   color: black;
   text-decoration: none;
   padding: .8em 3em calc(.8em + 3px);
-
   border: 2px solid #008CBA;
   border-radius: 12px;
   transition: 0.2s;
+  -webkit-touch-callout: none; 
+  -webkit-user-select: none;   
+  -khtml-user-select: none;    
+  -moz-user-select: none;    
+  -ms-user-select: none;      
+  user-select: none;  
 } 
 
 .button5:hover { 
@@ -63,15 +139,12 @@
     color: white;
 }
 
-.button5:active {
-  background: rgb(33,147,90);
-  box-shadow: 0 3px rgb(33,147,90) inset;
-}
-
 .eins-wrapper {
-    position: fixed;
-    left: 50px;
-    bottom: 340px;
+    //position: relative;
+    //float: left;
+	width:20%;
+    left: -130px;
+    bottom: -160px;
 }
 .eins {
     width: 20px;
@@ -83,27 +156,22 @@
 }
 
 .eins.one{
-   // position: relative;
-    background: #9db9d1; 
+  // position: relative;
+  //  background: #7ca1c2;
+    background: white;  
     top: 118px;
 }
   
-.eins.two{
-    //position: relative;
-    background:#5887b0;  
-   // top: 130px;
-}
-  
 .eins.three{
-    //position: relative;
-    background: #42aaff;  
-    //top: 142px;
+   // position: relative;
+    background: #008cba;  
+    top: 142px;
 }
   
 .eins.four{
-   // position: relative;
+   //position: relative;
     background: #000000; 
-   // top: 154px;
+    top: 154px;
 }
 .eins-group {
     display: flex;
@@ -111,8 +179,18 @@
     height: 2.1em;
 }
 .colinfo {	
+    font-family: Cambria Math, serif;
+	font-weight: bold;
     padding-left: 10px;
     text-align: left;
+}
+
+.tempo {
+    display: flex;
+    justify-content: space-between;
+    //height: 180px;
+    width: 1350px;
+    margin: 0 auto;
 }
   
   

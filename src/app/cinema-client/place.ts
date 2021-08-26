@@ -1,5 +1,4 @@
 export interface Place {
-  id: number;
   cost: number;
   brone: boolean;
   closet: boolean;
@@ -10,7 +9,6 @@ export interface Place {
 }
 
 export interface Vip {
-  id: number;
   cost: number;
   brone: boolean;
   closet: boolean;

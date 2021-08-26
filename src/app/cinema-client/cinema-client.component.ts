@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 
-import { PLACES } from './mock-places';
-import { Place } from './place';
+import { PLACES, WIDTH, HEIGHT, SEAT_WIDTH } from './mock-places';
+//import { Place } from './place';
+import { Seat, SeatType } from '../seat/seat-model';
 
 @Component({
   selector: 'app-cinema-client',
@@ -13,47 +14,112 @@ export class CinemaClientComponent implements OnInit {
   check1: boolean = true;
   check2: boolean = true;
  // vip = VIPS;
-  bronnedPlace?: Place;
+  bronnedPlace?: Seat;
  //bronnedVip?: Vip;
 
-  places = PLACES
+  places: Seat[] = PLACES
   placesStyle: any = []
-  scale = 50
+  placesInnerStyle: any = []
+  scale = 35
+  width = WIDTH
+  height = HEIGHT
+  seatWidth = SEAT_WIDTH
   containerStyle = {
     width: "500px",
     height: "500px"
   }
+   tempoStyle = {
+    height: ""
+  }
+  positionInfo = {
+    top:  "",
+    left: ""
+  }
+  mainStyle = {width: ""}
   constructor() {
+    this.places[0].type.type
+    //this.mashtabe()
+    let mainWidth = this.scale * this.width
+	let tempHeight = this.height
+    mainWidth = mainWidth > 1350 ? mainWidth + 150 : 1350
+	tempHeight = tempHeight > 180 ? tempHeight + 50 : 180
+    this.mainStyle = {
+      width: `${mainWidth}px`
+    }
+	this.tempoStyle = {
+		height: '$(tempHeight)px'
+	}
+    this.scale = Math.floor(this.scale / this.seatWidth)
+    this.containerStyle = {
+      width: `${this.scale * this.width}px`,
+      height: `${this.scale * this.height}px`
+    }
+
     this.places.forEach(elem => {
       this.placesStyle.push({
-        top: `${elem.y * this.scale}px`,
-        left: `${elem.x * this.scale}px`,
-        width: `${this.scale}px`,
-        height: `${this.scale}px` 
+        top: `${((elem.y - 1/* - 0.7*/) * this.scale)}px`,
+        left: `${((elem.x - 1/* - 0.85*/) * this.scale)}px`,
+        width: `${this.scale * elem.type.countSeat * this.seatWidth}px`,
+        height: `${this.scale * this.seatWidth}px`
+      })
+      this.placesInnerStyle.push({
+        width: `${(this.scale * 0.8 + ((elem.type.countSeat - 1) * this.scale)) * this.seatWidth}px`,
+        //height: `${this.scale}px` 
       })
     })
   }
 
+  // @HostListener("window:resize")
+  // mashtabe(): void{
+  //   //console.log("resize")
+  //   const widthCount = window.innerWidth - 840;
+  //   const heightCount = window.innerHeight - 200;
+  //   const widthScale = Math.floor(widthCount/WIDTH);
+  //   const heightScale = Math.floor(heightCount/HEIGHT);
+  //   this.scale = widthScale < heightScale ? widthScale : heightScale
+  //   this.containerStyle = {
+  //     width: `${this.scale * this.width}px`,
+  //     height: `${this.scale * this.height}px`
+  //   }
+  // }
   ngOnInit(): void {
   }
-  onBrone(place: Place): void {
+  onBrone(place: Seat): void {
     this.bronnedPlace = place;
     this.bronnedPlace.brone = !this.bronnedPlace.brone;
-    this.count += this.bronnedPlace.cost;
-    this.bronnedPlace.cost *= -1;
-    }
+    this.count += this.bronnedPlace.price;
+    this.bronnedPlace.price *= -1;
+  }
   //    onBroneVip(vip: Vip): void {
   //  this.bronnedVip = vip;
   //  this.count += this.bronnedVip.cost;
    // this.bronnedVip.brone = !this.bronnedVip.brone;
   //  this.bronnedVip.cost *= -1;
   //  }
-     infos(place: Place): void {
-    this.check1 = true;
-    this.bronnedPlace = place;
+     infos(event: MouseEvent, place: Seat): void {
+      // let testo = setTimeout(()=> {
+      //   this.check1 = true;
+      //   this.bronnedPlace = place;
+      //   this.positionInfo = {
+      //     left: `${event.pageX + 15}px`,
+      //     top: `${event.pageY + 15}px`
+      //   } 
+      // } , 500)
+      this.check1 = true;
+      this.bronnedPlace = place;
+      this.positionInfo = {
+        left: `${event.pageX + 15}px`,
+        top: `${event.pageY + -30}px`,
+      }
     }
-    infosOff(place: Place): void {
-    this.check1 = !this.check1;
+
+    infosOff(event: MouseEvent, place: Seat): void {
+      //clearTimeout(testo);
+      this.check1 = !this.check1;
+      this.positionInfo = {
+        left: ``,
+        top: ``
+      }
     }
     //  infoVips(vip: Vip): void {
     // this.check2 = true;

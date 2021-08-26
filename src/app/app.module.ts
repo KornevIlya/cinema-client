@@ -20,7 +20,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DragDropModule } from 'primeng/dragdrop';
-import { SpeedDialModule } from 'primeng/speeddial';
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule}  from 'primeng/message';
@@ -47,7 +46,6 @@ import { MessageModule}  from 'primeng/message';
     DropdownModule,
     CheckboxModule,
     DragDropModule,
-    SpeedDialModule,
     SelectButtonModule,
     MessagesModule,
     MessageModule
