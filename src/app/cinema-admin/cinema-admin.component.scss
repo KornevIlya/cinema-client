@@ -8,13 +8,13 @@
 }
 
 .admin {
-    &-container {
-        width: 800px;
-       // height: 800px;
-        margin: 0 auto;
-        padding-top: 50px;
+    // &-container {
+    //    // width: 800px;
+    //    // height: 800px;
+    //     //margin: 0 auto;
+    //     //padding-top: 50px;
         
-    }
+    // }
 
     &-hall {
        // width: 800px;
@@ -87,6 +87,8 @@
                 padding-left: 0px;
 
                 background-color: lightseagreen;
+
+                user-select: none;
                 &-show {
                     display: block;
                 }
@@ -106,11 +108,13 @@
 
     &-form {
         //padding-top: 30px;
+        margin: 0 auto;
         &-group {
             display: flex;
             flex-direction: column;
 
             font-size: 20px;
+            padding-bottom: 20px;
         }
     }
 

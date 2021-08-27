@@ -15,10 +15,12 @@ export class EditSeatComponent implements OnInit, OnDestroy {
   //x: number
   //y: number
   row: number
+  isEditRow: boolean = false
   //number: number
   rowMax: number
 
   price: number
+  isEditPrice: boolean = false
 
   constructor(private ref: DynamicDialogRef, private config: DynamicDialogConfig) { 
 
@@ -43,8 +45,8 @@ export class EditSeatComponent implements OnInit, OnDestroy {
     this.ref.close({
       //x: this.x,
       //y: this.y,
-      row: this.row,
-      price: this.price
+      row: this.isEditRow ? this.row : undefined,
+      price: this.isEditPrice ? this.price : undefined
       //number: this.number
     })
   }

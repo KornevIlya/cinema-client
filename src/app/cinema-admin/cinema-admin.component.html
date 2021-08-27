@@ -1,14 +1,12 @@
 
-<div class="admin-container" (mousemove)="mouseMove($event)">
+<div class="admin-container" (mousemove)="mouseMove($event)" >
     
-    <div class="admin-hall" #adminHall
-        (mousedown)="startSelectArea($event)"
-        (mouseup)="endSelectArea($event)"
+    <div class="admin-hall" #adminHall [style]="style.hall"
+    
     >
-
         <div class="admin-hall-select-area" [style]="selectAreaStyle"></div>
 
-        <div [style]="style.hall">
+        <div >
 
             <!-- <div class="admin-hall-buttons-vertical">
                 <div *ngFor="let h of hallHeightCount; index as i" [style.height]="buttonVerticalHeight.height">
@@ -93,7 +91,7 @@
 
     <div>
     </div>
-    <div class="admin-form">
+    <div class="admin-form" [style]="style.hall">
         <div class="admin-form-group">
             <label for="hallWidth">Ширина зала</label>
             <p-inputNumber 
@@ -136,9 +134,25 @@
                 
         </div>
 
-        <p-button label="Применить" (onClick)="updateState()"></p-button>
+        <div class="admin-form-group">
+            <label for="sofaWidth">Количество мест у дивана</label>
+            <p-inputNumber 
+                [(ngModel)]="sofaWidth" 
+                inputId="sofaWidth" 
+                [useGrouping]="false"
+                [min]="1"
+            ></p-inputNumber>
+                
+        </div>
 
-        <p-button label="Сохранить" (onClick)="save()"></p-button>
+        <div class="admin-form-group">
+            <p-button label="Применить" (onClick)="updateState()"></p-button>
+        </div>
+        
+        <div class="admin-form-group">
+            <p-button label="Сохранить" (onClick)="save()"></p-button>
+        </div>
+        
     </div>
     
 </div> 

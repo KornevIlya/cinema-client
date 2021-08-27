@@ -33,17 +33,29 @@ enum SeatType {
 }
 
 class Single {
-    private count: number = 1
+    private seatCount: number = 1
+    private seatType: SeatType = SeatType.SINGLE
     get type() {
-        return SeatType.SINGLE
+        return this.seatType
     }
     get countSeat() {
-        return this.count
+        return this.seatCount
     }
+    // type: SeatType = SeatType.SINGLE
+    // countSeat: number = 1
 }
 
 class Sofa {
-    private count: number  = 2
+    // countSeat: number = 2
+    // type: SeatType = SeatType.SOFA
+
+    // constructor(count?: number) {
+    //     if(count) {
+    //         this.countSeat = count
+    //     }
+    // }
+    private seatCount: number  = 2
+    private seatType: SeatType = SeatType.SOFA
 
     constructor(count?: number) {
         if(count) {
@@ -53,15 +65,15 @@ class Sofa {
 
     set countSeat(countSeat: number) {
         if (countSeat > 0) {
-            this.count = countSeat
+            this.seatCount = countSeat
         }
     }
     get countSeat(): number {
-        return this.count
+        return this.seatCount
     }
 
     get type() {
-        return SeatType.SOFA
+        return this.seatType
     }
 }
 

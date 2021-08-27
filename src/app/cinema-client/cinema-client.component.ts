@@ -1,8 +1,10 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 
-import { PLACES, WIDTH, HEIGHT, SEAT_WIDTH } from './mock-places';
+//import { PLACES, WIDTH, HEIGHT, SEAT_WIDTH } from './mock-places';
 //import { Place } from './place';
-import { Seat, SeatType } from '../seat/seat-model';
+import { Seat, SeatType, Single, Sofa } from '../seat/seat-model';
+import { CinemaServiceService } from '../cinema-service.service';
+import { Hall } from '../cinema-model';
 
 @Component({
   selector: 'app-cinema-client',
@@ -17,13 +19,13 @@ export class CinemaClientComponent implements OnInit {
   bronnedPlace?: Seat;
   //bronnedVip?: Vip;
 
-  places: Seat[] = PLACES
+  places: Seat[] = []
   placesStyle: any = []
   placesInnerStyle: any = []
-  scale = 35
-  width = WIDTH
-  height = HEIGHT
-  seatWidth = SEAT_WIDTH
+  scale = 40
+  width: number = 0//= WIDTH
+  height: number = 0 //= HEIGHT
+  seatWidth: number = 0 //= SEAT_WIDTH
   containerStyle = {
     width: "500px",
     height: "500px"
@@ -36,20 +38,42 @@ export class CinemaClientComponent implements OnInit {
     left: ""
   }
   mainStyle = { width: "" }
-  constructor() {
-    this.places[0].type.type
-    //this.mashtabe()
+
+  constructor(private cinemaService: CinemaServiceService) {
+    this.cinemaService
+      .get()
+      .subscribe((hall: Hall) => {
+        this.width = hall.width
+        this.height = hall.height
+        this.seatWidth = hall.seatWidth
+        this.places = hall.seats.map(seatHall => { return {
+          x: seatHall.x,
+          y: seatHall.y,
+          brone: seatHall.brone,
+          closet: seatHall.closet,
+          number: seatHall.number,
+          price: seatHall.price,
+          row: seatHall.row,
+          type: seatHall.type.countSeat === 1 ? new Single() : new Sofa(seatHall.type.countSeat)
+        }})
+
+        this.init()
+      })
+  }
+
+
+  private init() {
     let mainWidth = this.scale * this.width
     let tempHeight = this.height
+
     mainWidth = mainWidth > 1350 ? mainWidth + 150 : 1350
     tempHeight = tempHeight > 180 ? tempHeight + 50 : 180
     this.mainStyle = {
       width: `${mainWidth}px`
     }
-    this.tempoStyle = {
-      height: '$(tempHeight)px'
-    }
+
     this.scale = Math.floor(this.scale / this.seatWidth)
+
     this.containerStyle = {
       width: `${this.scale * this.width}px`,
       height: `${this.scale * this.height}px`
@@ -62,13 +86,13 @@ export class CinemaClientComponent implements OnInit {
         width: `${this.scale * elem.type.countSeat * this.seatWidth}px`,
         height: `${this.scale * this.seatWidth}px`
       })
+
       this.placesInnerStyle.push({
         width: `${(this.scale * 0.8 + ((elem.type.countSeat - 1) * this.scale)) * this.seatWidth}px`,
         //height: `${this.scale}px` 
       })
     })
   }
-
   // @HostListener("window:resize")
   // mashtabe(): void{
   //   //console.log("resize")

@@ -1,11 +1,17 @@
 <div class="edit-seat">
     <div class="edit-seat-group">
-        <label class="edit-seat-label">Ряд</label>
-        <p-inputNumber [(ngModel)]="row" [min]="1" [max]="rowMax"></p-inputNumber>
+        <div class="edit-seat-check">
+            <label class="edit-seat-label">Редактировать ряд</label> 
+            <p-checkbox [(ngModel)]="isEditRow" [binary]="true"></p-checkbox>
+        </div>
+        <p-inputNumber [(ngModel)]="row" [min]="1" [max]="rowMax" [disabled]="!isEditRow"></p-inputNumber>
     </div>
     <div class="edit-seat-group">
-        <label class="edit-seat-label">Цена</label>
-        <p-inputNumber [(ngModel)]="price" [min]="1"></p-inputNumber>
+        <div class="edit-seat-check">
+            <label class="edit-seat-label">Редактировать цену</label>
+            <p-checkbox [(ngModel)]="isEditPrice" [binary]="true"></p-checkbox>
+        </div>
+        <p-inputNumber [(ngModel)]="price" [min]="1" [disabled]="!isEditPrice"></p-inputNumber>
     </div>
     <div class="edit-seat-group">
         <p-button (onClick)="ok()">Ок</p-button>

@@ -25,7 +25,7 @@ export class CinemaServiceService {
       )
   }
 
-  private errorHandler(message: String) {
-
+  get() {
+    return this.http.get<Hall>("http://localhost:8080/hall")
   }
 }

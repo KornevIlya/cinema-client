@@ -30,7 +30,7 @@ export class AddSeatComponent implements OnInit {
     { label: 'Диван', value: SeatType.SOFA },
   ]
 
-  countSeat: number = 2
+  countSeat: number
 
   isShow: boolean = false
 
@@ -44,6 +44,7 @@ export class AddSeatComponent implements OnInit {
   constructor(private ref: DynamicDialogRef, private config: DynamicDialogConfig) { 
     this.maxCount = this.config.data.maxCount
     this.maxRow = this.config.data.maxRow
+    this.countSeat = this.config.data.sofaWidth
   }
 
   ngOnInit(): void {
